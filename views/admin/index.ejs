@@ -1,14 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>admin page</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
-</head>
-<body>
-    <h1>admin landing page</h1>
-</body>
-</html>>
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Vidul">
+    <title>Admin Panel</title>
+
+    <%- include('../partials/links') %>   
+
+<style>
+  body {
+ font-family: cursive;
+}
+</style>
+
+  </head>
+  <body>
+
+    <!-- Icons -->
+    <%- include('../partials/icons') %>
+
+<main class="d-flex flex-nowrap">
+
+  <!-- Sidebar -->
+    <%- include('../partials/sidebar', {page: "home"}) %>
+
+  <!-- Body -->
+
+  <div class="px-4 py-5 my-5 text-center">
+    <svg class="d-block mx-auto mb-4" width="72" height="57" style="fill: currentColor;"><use xlink:href="#admin2"/></svg>
+    <h1 class="display-5 fw-bold text-body-emphasis">Welcome</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead mb-4">Welcome to the Admin Panel, your hub for database management, statistical insights, and more. This centralized platform empowers you to efficiently edit database entries, analyze statistics, and perform various administrative tasks. With its user-friendly interface, you can navigate seamlessly to streamline your workflow and optimize system functionality.</p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a href="database" class="btn btn-primary btn-lg px-4 gap-3"><svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#database"/></svg>Database</a>
+        <a href="stats" class="btn btn-secondary btn-lg px-4"><svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#stats"/></svg>Statatics</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+</html>

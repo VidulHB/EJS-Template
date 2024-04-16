@@ -21,10 +21,22 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-admin.get('/', isAdmin, async (req, res, next) => {
+admin.get('/', async (req, res, next) => {
         res.render('admin/index.ejs', {
-          user: user
+          user: req.session.user
         });
+});
+
+admin.get('/database', async (req, res, next) => {
+  res.render('admin/database.ejs', {
+    user: req.session.user
+  });
+});
+
+admin.get('/stats', async (req, res, next) => {
+  res.render('admin/stats.ejs', {
+    user: req.session.user
+  });
 });
 
 module.exports = admin;
