@@ -10,14 +10,15 @@ const { v4: uuidv4 } = require("uuid");
 app.use(express.static(__dirname + '/public'));
 
 //MongoDB
-const MongoDBURI = 'mongodb+srv://vidul:v1i1d1u4l@movie-database.c5jv16g.mongodb.net/?retryWrites=true&w=majority'
+//mongodb+srv://admin:v1i1d1u4l@ejs-template.eh6bicf.mongodb.net/?retryWrites=true&w=majority&appName=EJS-Template
+const MongoDBURI = 'mongodb+srv://admin:v1i1d1u4l@ejs-template.eh6bicf.mongodb.net/?retryWrites=true&w=majority&appName=EJS-Template'
 const MongoStore = require("connect-mongo")(session);
 mongoose.connect(MongoDBURI, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
 const Database = mongoose.connection;
-Database.on("error", console.error.bind(console, chalk.bgRedBright.bold(' [MongoDB] Failed To Connect To Database : ')));
+Database.on("error", console.error.bind(console, chalk.bgRedBright.bold(' [MongoDB] Failed To Connect To Database : \n')));
 Database.once("open", () => { console.log(chalk.bgGreenBright.bold(' [MongoDB] Successfuly Connected To Database '))});
 
 //Express
