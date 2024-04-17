@@ -32,7 +32,7 @@
         margin-left: 30px;
         margin-bottom: 0px;
       }
-      #exp-arr:hover {
+      .exp-arr:hover {
         cursor: pointer;
       }
 </style>
@@ -52,16 +52,16 @@
   <div class="container" style="max-height: 100%;">
     <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px;">
         <div class="btn-group" role="group" style="height: 35px;">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-               Select Collection
+            <button type="button" id="col-selector" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Collection: collection1
             </button>
             <ul class="dropdown-menu">
-                    <li><input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio1" autocomplete="off" checked>
-                    <label class="btn btn-outline-secondary dropdown-item" for="vbtn-radio1">Collection 1</label></li>
-                <li><input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="off">
-                    <label class="btn btn-outline-secondary dropdown-item" for="vbtn-radio2">Collection 2</label></li>
-                <li> <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
-                    <label class="btn btn-outline-secondary dropdown-item" for="vbtn-radio3">Collection 3</label></li>
+                    <li><input type="radio" class="btn-check" name="collection" id="collection1" autocomplete="off" checked>
+                    <label class="btn btn-outline-secondary dropdown-item" for="collection1">Collection 1</label></li>
+                <li><input type="radio" class="btn-check" name="collection" id="Users" autocomplete="off">
+                    <label class="btn btn-outline-secondary dropdown-item" for="Users">Users</label></li>
+                <li> <input type="radio" class="btn-check" name="collection" id="collection3" autocomplete="off">
+                    <label class="btn btn-outline-secondary dropdown-item" for="collection3">Collection 3</label></li>
             </ul>
           </div>
           <div class="input-group">
@@ -73,7 +73,7 @@
   <div class="b-divider" style="height: 5px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;"></div>
 
   <div style="height: 86.5%; overflow: scroll; overflow-x: hidden; position: fixed;">
-  <div class="d-flex gap-3 flex-wrap" style="height: 105%; width: 1200px;">
+  <div class="d-flex row-gap-3 column-gap-3 flex-wrap" style=" width: 1200px; padding: 0px;" id="inside-collection">
     <div class="card" style="width: 350px; height: min-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
         <div class="card-tools z-2 d-flex position-relative flex-wrap">
             <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
@@ -88,26 +88,26 @@
           <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Birthday : 14/11/2008</p>
           <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Password : 82374fuiewh</p>
           <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
-            <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#array1" aria-expanded="false" aria-controls="array1" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2 z-3" width="16" height="16"><use id="arr-pointer" xlink:href="#caret-right"/></svg>
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#array1" aria-expanded="false" aria-controls="array1" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
             </span>
             <span>Array : array</span>
             <div class="collapse inner-arr-txt" id="array1">
-              <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#array2" aria-expanded="false" aria-controls="array2" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 z-3" width="16" height="16"><use id="arr-pointer" xlink:href="#caret-right"/></svg>
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#array2" aria-expanded="false" aria-controls="array2" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
               </span>
               <span>Array : array</span>
               <p class="collapse inner-arr-txt" id="array2">hi</p>
             </div>
           </div>
           <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
-            <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#array3" aria-expanded="false" aria-controls="array3" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2 z-3" width="16" height="16"><use id="arr-pointer" xlink:href="#caret-right"/></svg>
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#array3" aria-expanded="false" aria-controls="array3" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
             </span>
             <span>Array2 : array</span>
             <div class="collapse inner-arr-txt" id="array3">
-              <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#array4" aria-expanded="false" aria-controls="array4" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 z-3" width="16" height="16"><use id="arr-pointer" xlink:href="#caret-right"/></svg>
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#array4" aria-expanded="false" aria-controls="array4" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
               </span>
               <span>Array 2: array</span>
               <p class="collapse inner-arr-txt" id="array4">hi</p>
@@ -131,19 +131,139 @@
         </div>
       </div>
 
+      <div class="card" style="width: 350px; height: min-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
+        <div class="card-body">
+          <p class="card-text placeholder-glow">
+            <span class="placeholder col-7" style="border-radius: 3px;"></span>
+            <span class="placeholder col-4" style="border-radius: 3px;"></span>
+            <span class="placeholder col-4" style="border-radius: 3px;"></span>
+            <span class="placeholder col-6" style="border-radius: 3px;"></span>
+            <span class="placeholder col-8" style="border-radius: 3px;"></span>
+            <span class="placeholder col-6" style="border-radius: 3px;"></span>
+            <span class="placeholder col-9" style="border-radius: 3px;"></span>
+            <span class="placeholder col-3" style="border-radius: 3px;"></span>
+            <span class="placeholder col-8" style="border-radius: 3px;"></span>
+          </p>
+        </div>
+      </div>
+      <div class="card" style="width: 350px; height: min-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
+        <div class="card-tools z-2 d-flex position-relative flex-wrap">
+            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
+            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg></button>
+            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
+            <button type="button" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
+        </div>
+        <div class="card-body">
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">_Id : 344353255397843982</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Name : Senura Perera</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Username : senura001312</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Birthday : 24/6/2008</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Password : 20080612</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 </main>
 <script>
-  $(".exp-arr").click(function(){
-   let href = $(this).find('#arr-pointer').attr("xlink:href")
-   console.log('e')
-   if(href === "#caret-right"){
-    $(this).find('#arr-pointer').attr("xlink:href", "#caret-down")
-   }else{
-    $(this).find('#arr-pointer').attr("xlink:href", "#caret-right")
-   }
-  })
+  function exp_arr(element) {
+     let href = $(element).find('.arr-pointer').attr("xlink:href")
+     if(href === "#caret-right"){
+      $(element).find('.arr-pointer').attr("xlink:href", "#caret-down")
+     }else{
+      $(element).find('.arr-pointer').attr("xlink:href", "#caret-right")
+     }
+    }
+    </script>
+<script>
+
+  $(document).ready(function(){
+    $('input[type="radio"][name="collection"]').change(function(){
+        let selectedCollection = $('input[type="radio"][name="collection"]:checked').attr('id');
+        $('#col-selector').text(`Collection: ${selectedCollection}`)
+        $('#inside-collection').empty();
+        for (let i = 0; i < (Math.floor(Math.random()*9)+2); i++) {
+          $('#inside-collection').append(`<div class="card" style="width: 350px; height: min-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
+        <div class="card-body">
+          <p class="card-text placeholder-glow">
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+            <span class="placeholder col-${Math.floor(Math.random()*(10-3+1))+3}" style="border-radius: 3px;"></span>
+          </p>
+        </div>
+      </div>`);
+        }
+
+        setTimeout(() => {
+          axios.get('/api/database/users')
+        .then(function(response) {
+          $('#inside-collection').empty();
+            const data = response.data
+          for (let i = 0; i < data.length; i++) {
+            let collection = data[i]
+            let card_text = '';
+            let keys = Object.keys(data[i])
+
+            function handleArr(array, CardID) {
+              let objects = '';
+              for (let i2 = 0; i2 < array.length; i2++) {
+                let object_children = '';
+                Object.keys(array[i2]).forEach(key => {
+                  object_children += `<p class="collapse inner-arr-txt" id="${CardID}_${i2}">${key} : ${array[i2][key]}</p>`
+                })
+                objects += `<div class="collapse inner-arr-txt" id="${CardID}">
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              </span>
+              <span>${i2} : Object</span>
+              ${object_children}
+            </div>`
+              }
+              return objects;
+            }
+
+            keys.forEach(key => {
+              if(Array.isArray(collection[key])){
+                card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+            </span>
+            <span>${key} : Array (${collection[key].length})</span>
+            ${handleArr(collection[key], `${i}_${key}`)}
+            </div>`
+              }else{
+              card_text += `<p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">${key} : ${collection[key]}</p>`
+              }
+            });
+            $('#inside-collection').append(`<div class="card" style="width: 350px; height: min-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
+        <div class="card-tools z-2 d-flex position-relative flex-wrap">
+            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
+            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg></button>
+            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
+            <button type="button" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
+        </div>
+        <div class="card-body">
+          ${card_text}
+        </div>
+      </div>`)
+          }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+        });
+        }, 1000);
+    });
+
+});
+
+
   </script>
+  </body>
 </html>
