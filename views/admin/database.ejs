@@ -52,18 +52,18 @@
   <div class="container" style="max-height: 100%;">
     <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px;">
         <div class="btn-group" role="group" style="height: 35px;">
-            <button type="button" id="col-selector" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" id="col-selector" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Collection: collection1
             </button>
             <ul class="dropdown-menu">
                 <li><input type="radio" class="btn-check" name="collection" id="Posts" autocomplete="off" checked>
-                    <label class="btn btn-outline-secondary dropdown-item" for="Posts">Posts</label></li>
+                    <label class="btn btn-outline-primary dropdown-item" for="Posts">Posts</label></li>
                 <li><input type="radio" class="btn-check" name="collection" id="Users" autocomplete="off">
-                    <label class="btn btn-outline-secondary dropdown-item" for="Users">Users</label></li>
+                    <label class="btn btn-outline-primary dropdown-item" for="Users">Users</label></li>
                 <li><input type="radio" class="btn-check" name="collection" id="Todos" autocomplete="off">
-                    <label class="btn btn-outline-secondary dropdown-item" for="Todos">Todos</label></li>
+                    <label class="btn btn-outline-primary dropdown-item" for="Todos">Todos</label></li>
                 <li><input type="radio" class="btn-check" name="collection" id="Photos" autocomplete="off">
-                    <label class="btn btn-outline-secondary dropdown-item" for="Photos">Photos</label></li>
+                    <label class="btn btn-outline-primary dropdown-item" for="Photos">Photos</label></li>
             </ul>
           </div>
           <div class="input-group">
@@ -79,6 +79,70 @@
 
     </div>
   </div>
+
+  <!-- Toasts, Modals, ect -->
+
+  <div aria-live="polite" aria-atomic="true" class="position-relative">
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="transition: height 0.5s ease-in-out;">
+  <div id="copyToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
+      <div class="toast-body">
+        Successfully Copied JSON Of Object.
+      </div>
+  </div>
+  <div id="deleteToast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
+      <div class="toast-body">
+        Successfully Deleted Object From Collection
+      </div>
+  </div>
+  <div id="editObjToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
+    <div class="toast-body">
+      Successfully Saved Changes
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalLabel">Are You Sure That You Want To Delete The Following Object From This Collection?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-center" id="deleteModal-content">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger deleteModal-confirm" onclick="deleteObj(this)" data-bs-dismiss="modal" id="deleteModal-confirm">Confirm Deletion</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editobjModal" tabindex="-1" aria-labelledby="editobjModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editobjModalLabel">Edit Object</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-center" id="editobjModal-content">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-warning editobjModal-confirm" onclick="editObj(this)" data-bs-dismiss="modal" id="editobjModal-confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 </main>
 <script>
@@ -90,23 +154,216 @@
       $(element).find('.arr-pointer').attr("xlink:href", "#caret-right")
      }
     }
-    </script>
-<script>
+    function copyJSON(element) {
+        var textarea = $("<textarea>")
+            .val($(element).find('#json').text())
+            .appendTo("body")
+            .select();
+        document.execCommand("copy");
+        textarea.remove();
+const toast = $('#copyToast').clone(true)
+const copyToast = toast.appendTo('.toast-container')
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(copyToast)
+    toastBootstrap.show()
+    }
 
-function isImageUrl(url) {
-    var img = new Image();
-    img.onload = function() {
-        return true;
-    };
-    img.onerror = function() {
-        return true;
-    };
-    img.src = url;
-}
+    function deleteObj(element) {
+      $('#inside-collection').find(`#${$(element).attr('id')}`).remove();
+      const toast = $('#deleteToast').clone(true)
+const deleteToast = toast.appendTo('.toast-container')
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(deleteToast)
+    toastBootstrap.show()
+    }
 
+    const deleteModal = document.getElementById('deleteModal')
+  deleteModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget
+    const objno = button.getAttribute('data-bs-objno')
+    $('.deleteModal-confirm').attr('id', `${objno}`)
+    let clonedparent = $(button).parent().parent().clone(true)
+    clonedparent.find('.card-tools').remove()
+    $('#deleteModal-content').empty()
+    clonedparent.appendTo('#deleteModal-content')
+  })
+
+  function editObj(element) {
+    let jsondata = $('#editobjModal-content').data('bs-json')
+  //  console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`)))
+  load_cards()
+      const toast = $('#editObjToast').clone(true)
+const editobjToast = toast.appendTo('.toast-container')
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(editobjToast)
+    toastBootstrap.show()
+    }
+
+  const editobjModal = document.getElementById('editobjModal')
+  editobjModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget
+    const objno = button.getAttribute('data-bs-objno')
+    const jsondata = button.getAttribute('data-bs-json')
+    $('.editobjModal-confirm').attr('id', `${objno}`)
+    $('#editobjModal-content').empty()
+    $('#editobjModal-content').data('bs-json', jsondata)
+    $('#editobjModal-content').append(create_edit_card(JSON.parse(jsondata), `${objno}_${Math.round(Math.random()*9999)}`))
+  })
+
+  function build_json(data, i) {
+            let collection = data
+            let card_text = '';
+            let keys = Object.keys(collection)
+
+            function input_type(input, type) {
+              if(type.includes('str')){
+                return `"${input}"`
+              }else{
+                return input
+              }
+            }
+
+            function handleArr(array, CardID) {
+              let objects = '';
+              for (let i2 = 0; i2 < array.length; i2++) {
+                let object_children = '';
+                Object.keys(array[i2]).forEach(key => {
+                  objects_children += `"${key}" : ${input_type($('#editobjModal-content').find(`#${key}`).val(), typeof array[key])}, `
+                })
+            objects += `{
+              ${object_children}
+          },`
+              }
+              return objects;
+            }
+
+            function handleNested(nest, CardID) {
+              let objects = '';
+              let i2 = 0;
+
+              Object.keys(nest).forEach(key => {
+                i2++
+                if (typeof nest[key] === 'object') {
+            objects += `
+              "${key}" : {
+                ${handleNested(nest[key], `${CardID}_${i2}`)}
+              },
+            `
+              }else{
+                  objects	+= `"${key}" : ${input_type($('#editobjModal-content').find(`#${key}`).val(), typeof nest[key])}, `
+              }
+              });
+              return objects;
+            }
+
+            keys.forEach(key => {
+              if(Array.isArray(collection[key])){
+            card_text += `"${key}" : [
+            ${handleArr(collection[key], `${i}_${key}`)}
+            ],`
+              }else { 
+                if (typeof collection[key] === 'object') {
+            card_text += `"${key}" : {
+              ${handleNested(collection[key], `${i}_${key}`)}
+            },`
+              }else{
+               card_text += `"${key}" : ${input_type($('#editobjModal-content').find(`#${key}`).val(), typeof collection[key])},`
+              }
+            }
+            });
+      let text = `{
+        ${card_text}}`
+      text = text.replace(',}', '}')
+      return text
+
+  }
+
+  function create_edit_card(data, i) {
+            let collection = data
+            let card_text = '';
+            let keys = Object.keys(collection)
+
+            function handleArr(array, CardID) {
+              let objects = '';
+              for (let i2 = 0; i2 < array.length; i2++) {
+                let object_children = '';
+                Object.keys(array[i2]).forEach(key => {
+                  objects_children += `<span class="input-group input-group-sm mb-3 collapse inner-arr-txt" id="${CardID}_${i2}" style="width: max-content; margin-right: 50px;">
+  <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
+  <input type="${typeof array[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${array[key]}" aria-describedby="inputGroup-sizing-sm">
+</span>`
+                })
+                objects += `<div class="collapse inner-arr-txt" id="${CardID}">
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              </span>
+              <span>${i2} : Object</span>
+              ${object_children}
+            </div>`
+              }
+              return objects;
+            }
+
+            function handleNested(nest, CardID) {
+              let objects = '';
+              let i2 = 0;
+
+              Object.keys(nest).forEach(key => {
+                i2++
+                if (typeof nest[key] === 'object') {
+                  objects += `<div class="collapse inner-arr-txt" id="${CardID}">
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              </span>
+            <span>${key} : Nest (${Object.keys(nest[key]).length})</span>
+            ${handleNested(nest[key], `${CardID}_${i2}`)}
+            </div>`
+              }else{
+                  objects += `<span class="input-group input-group-sm mb-3 collapse inner-arr-txt" id="${CardID}" style="width: max-content; margin-right: 50px;">
+  <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
+  <input type="${typeof nest[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${nest[key]}" aria-describedby="inputGroup-sizing-sm">
+</span>`
+              }
+              });
+              return objects;
+            }
+
+            keys.forEach(key => {
+              if(Array.isArray(collection[key])){
+                card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+            </span>
+            <span>${key} : Array (${collection[key].length})</span>
+            ${handleArr(collection[key], `${i}_${key}`)}
+            </div>`
+              }else { 
+                if (typeof collection[key] === 'object') {
+                  card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+            </span>
+            <span>${key} : Nest (${Object.keys(collection[key]).length})</span>
+            ${handleNested(collection[key], `${i}_${key}`)}
+            </div>`
+              }else{
+              card_text += `<span class="input-group input-group-sm mb-3">
+  <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
+  <input type="${typeof collection[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${collection[key]}" aria-describedby="inputGroup-sizing-sm">
+</span>`
+              }
+            }
+            })
+            return `<div class="d-flex align-items-stretch" id="${i}">
+            <div class="card" style="width: max-content; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
+        <div class="card-body">
+          ${card_text}
+        </div>
+      </div>
+      </div>`
+
+  }
+  
   function loading_cards() {
     $('#inside-collection').empty();
-        for (let i = 0; i < (Math.floor(Math.random()*9)+2); i++) {
+        for (let i = 0; i < (Math.floor(Math.random()*10)+2); i++) {
           $('#inside-collection').append(`<div class="card" style="width: 350px; height: min-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
         <div class="card-body">
           <p class="card-text placeholder-glow">
@@ -161,23 +418,21 @@ function isImageUrl(url) {
             function handleNested(nest, CardID) {
               let objects = '';
               let i2 = 0;
-              console.log(Object.keys(nest))
 
               Object.keys(nest).forEach(key => {
                 i2++
                 if (typeof nest[key] === 'object') {
                   objects += `<div class="collapse inner-arr-txt" id="${CardID}">
-              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i2}_${key}" aria-expanded="false" aria-controls="${i2}_${key}" style="margin-left: -20px; margin-right: -10px;">
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
                 <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
               </span>
             <span>${key} : Nest (${Object.keys(nest[key]).length})</span>
-            ${handleNested(nest[key], `${i2}_${key}`)}
+            ${handleNested(nest[key], `${CardID}_${i2}`)}
             </div>`
               }else{
                   objects += `<p class="collapse inner-arr-txt" id="${CardID}">${key} : ${nest[key]}</p>`
               }
               });
-              console.log(objects)
               return objects;
             }
 
@@ -204,13 +459,13 @@ function isImageUrl(url) {
               }
             }
             });
-            $('#inside-collection').append(`<div class="d-flex align-items-stretch">
+            $('#inside-collection').append(`<div class="d-flex align-items-stretch" id="${i}">
             <div class="card" style="width: 350px; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
         <div class="card-tools z-2 d-flex position-relative flex-wrap">
-            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
-            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#editobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
+            <button onclick="copyJSON(this)" id="copyToastBtn" type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg><span id="json" style="display: none;">${JSON.stringify(collection)}</span></button>
             <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
-            <button type="button" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-objno="${i}" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
         </div>
         <div class="card-body">
           ${card_text}
