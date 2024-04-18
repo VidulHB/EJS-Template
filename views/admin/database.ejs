@@ -51,7 +51,7 @@
   <!-- Body -->
   <div class="container" style="max-height: 100%;">
     <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px;">
-        <div class="btn-group" role="group" style="height: 35px;">
+        <div style="height: 35px;">
             <button type="button" id="col-selector" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Collection: collection1
             </button>
@@ -68,7 +68,13 @@
           </div>
           <div class="input-group">
             <div class="input-group-text"><svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#search"/></svg></div>
-            <input type="text" class="form-control" id="autoSizingInputGroup" placeholder="Search">
+            <input type="text" class="form-control" id="search-bar" placeholder="Search">
+          </div>
+          <div>
+            <button type="button" style="height: 40px; width: 40px;" id="refreshbtn" onclick="load_cards(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#refresh"/></svg></button>
+          </div>
+          <div>
+            <button type="button" id="insertbtn" data-bs-toggle="modal" data-bs-target="#addobjModal" data-bs-json="" style="height: 40px; width: 40px;" class="btn btn-primary" aria-expanded="false"><svg class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#add"/></svg></button>
           </div>
 </div>
 
@@ -98,6 +104,11 @@
     <div class="toast-body">
       Successfully Saved Changes
     </div>
+</div>
+<div id="addObjToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
+  <div class="toast-body">
+    Successfully Inserted Object
+  </div>
 </div>
 </div>
 </div>
@@ -143,9 +154,52 @@
   </div>
 </div>
 
+<div class="modal fade" id="addobjModal" tabindex="-1" aria-labelledby="addobjModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addobjModalLabel">Insert Object</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-center" id="addobjModal-content">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success addobjModal-confirm" onclick="addObj(this)" data-bs-dismiss="modal" id="addobjModal-confirm">Insert Object</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 </main>
 <script>
+$(document).ready(function(){
+    $("#search-bar").on("input", function() {
+        let searchText = $(this).val().trim().toLowerCase();
+        let regex = new RegExp(searchText, "gi");
+        $(".search-card").each(function() {
+          let cardText2 = $(this).text().toLowerCase();
+            $(this).find("p").each(function() {
+                let cardText = $(this).text().toLowerCase().replace('<span style="background-color: rgba(0, 38, 255, 0.6); font-size: 17px; font-weight: bold;">', '').replace('</span>', '');
+                let markedText = cardText.replace(regex, function(match) {
+        return '<span style="background-color: rgba(0, 38, 255, 0.6); font-size: 17px; font-weight: bold;">' + match + '</span>';
+    });
+                $(this).html(markedText);
+            });
+            if (cardText2.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide(); 
+            }
+
+        });
+    });
+});
+
   function exp_arr(element) {
      let href = $(element).find('.arr-pointer').attr("xlink:href")
      if(href === "#caret-right"){
@@ -168,7 +222,7 @@ const copyToast = toast.appendTo('.toast-container')
     }
 
     function deleteObj(element) {
-      $('#inside-collection').find(`#${$(element).attr('id')}`).remove();
+      load_cards()
       const toast = $('#deleteToast').clone(true)
 const deleteToast = toast.appendTo('.toast-container')
   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(deleteToast)
@@ -188,8 +242,8 @@ const deleteToast = toast.appendTo('.toast-container')
 
   function editObj(element) {
     let jsondata = $('#editobjModal-content').data('bs-json')
-  //  console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`)))
-  load_cards()
+ // console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'editobj')))
+ load_cards()
       const toast = $('#editObjToast').clone(true)
 const editobjToast = toast.appendTo('.toast-container')
   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(editobjToast)
@@ -207,13 +261,134 @@ const editobjToast = toast.appendTo('.toast-container')
     $('#editobjModal-content').append(create_edit_card(JSON.parse(jsondata), `${objno}_${Math.round(Math.random()*9999)}`))
   })
 
-  function build_json(data, i) {
+  function addObj(element) {
+    let jsondata = $('#addobjModal-content').data('bs-json')
+    // console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.addobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'addobj')))
+  load_cards()
+      const toast = $('#addObjToast').clone(true)
+const addobjToast = toast.appendTo('.toast-container')
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(addobjToast)
+    toastBootstrap.show()
+    }
+
+  const addobjModal = document.getElementById('addobjModal')
+  addobjModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget
+    const objno = button.getAttribute('data-bs-objno')
+    const jsondata = $('#insertbtn').data('bs-json')
+    $('.addobjModal-confirm').attr('id', `${objno}`)
+    $('#addobjModal-content').empty()
+    $('#addobjModal-content').data('bs-json', jsondata)
+    $('#addobjModal-content').append(create_add_card(JSON.parse(jsondata), `${objno}_${Math.round(Math.random()*9999)}`))
+  })
+
+  function create_add_card(data, i) {
+            let collection = data
+            let card_text = '';
+            let keys = Object.keys(collection)
+
+            function inputtype(type) {
+              if(type.includes('boolean')){
+                return true
+              }
+              if(type.includes("num")){
+                return 0
+              }
+              return ""
+            }
+
+            function handleArr(array, CardID) {
+              let objects = '';
+              for (let i2 = 0; i2 < array.length; i2++) {
+                let object_children = '';
+                Object.keys(array[i2]).forEach(key => {
+                  objects_children += `<span class="input-group input-group-sm mb-3 collapse inner-arr-txt" id="${CardID}_${i2}" style="width: max-content; margin-right: 50px;">
+  <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
+  <input type="${typeof array[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+</span>`
+                })
+                objects += `<div class="collapse inner-arr-txt" id="${CardID}">
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              </span>
+              <span>${i2} : Object</span>
+              ${object_children}
+            </div>`
+              }
+              return objects;
+            }
+
+            function handleNested(nest, CardID) {
+              let objects = '';
+              let i2 = 0;
+
+              Object.keys(nest).forEach(key => {
+                i2++
+                if (typeof nest[key] === 'object') {
+                  objects += `<div class="collapse inner-arr-txt" id="${CardID}">
+              <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              </span>
+            <span>${key} : Nest (${Object.keys(nest[key]).length})</span>
+            ${handleNested(nest[key], `${CardID}_${i2}`)}
+            </div>`
+              }else{
+                  objects += `<span class="input-group input-group-sm mb-3 collapse inner-arr-txt" id="${CardID}" style="width: max-content; margin-right: 50px;">
+  <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
+  <input type="${typeof nest[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+</span>`
+              }
+              });
+              return objects;
+            }
+
+            keys.forEach(key => {
+              if(Array.isArray(collection[key])){
+                card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+            </span>
+            <span>${key} : Array (${collection[key].length})</span>
+            ${handleArr(collection[key], `${i}_${key}`)}
+            </div>`
+              }else { 
+                if (typeof collection[key] === 'object') {
+                  card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+            </span>
+            <span>${key} : Nest (${Object.keys(collection[key]).length})</span>
+            ${handleNested(collection[key], `${i}_${key}`)}
+            </div>`
+              }else{
+              card_text += `<span class="input-group input-group-sm mb-3">
+  <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
+  <input type="${typeof collection[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+</span>`
+              }
+            }
+            })
+            return `<div class="d-flex align-items-stretch" id="${i}">
+            <div class="card" style="width: max-content; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
+        <div class="card-body">
+          ${card_text}
+        </div>
+      </div>
+      </div>`
+
+  }
+
+  function build_json(data, i, modal) {
             let collection = data
             let card_text = '';
             let keys = Object.keys(collection)
 
             function input_type(input, type) {
-              if(type.includes('str')){
+              
+              if(!input){
+                return `""`
+            }
+              if(type.includes('te')){
                 return `"${input}"`
               }else{
                 return input
@@ -225,7 +400,7 @@ const editobjToast = toast.appendTo('.toast-container')
               for (let i2 = 0; i2 < array.length; i2++) {
                 let object_children = '';
                 Object.keys(array[i2]).forEach(key => {
-                  objects_children += `"${key}" : ${input_type($('#editobjModal-content').find(`#${key}`).val(), typeof array[key])}, `
+                  objects_children += `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))}, `
                 })
             objects += `{
               ${object_children}
@@ -247,7 +422,7 @@ const editobjToast = toast.appendTo('.toast-container')
               },
             `
               }else{
-                  objects	+= `"${key}" : ${input_type($('#editobjModal-content').find(`#${key}`).val(), typeof nest[key])}, `
+                  objects	+= `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))}, `
               }
               });
               return objects;
@@ -264,7 +439,7 @@ const editobjToast = toast.appendTo('.toast-container')
               ${handleNested(collection[key], `${i}_${key}`)}
             },`
               }else{
-               card_text += `"${key}" : ${input_type($('#editobjModal-content').find(`#${key}`).val(), typeof collection[key])},`
+               card_text += `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))},`
               }
             }
             });
@@ -383,8 +558,15 @@ const editobjToast = toast.appendTo('.toast-container')
   }
 
   function load_cards() {
+    let element = '#refreshbtn'
     let selectedCollection = $('input[type="radio"][name="collection"]:checked').attr('id');
         $('#col-selector').text(`Collection: ${selectedCollection}`)
+        $('#insertbtn').prop("disabled", true)
+        $('#col-selector').prop("disabled", true)
+        $('#search-bar').prop("disabled", true)
+        $(element).prop("disabled", true)
+        $(element).find('#icon').hide()
+        $(element).find('#spinner').show()
         loading_cards()
 
         setTimeout(() => {
@@ -459,7 +641,7 @@ const editobjToast = toast.appendTo('.toast-container')
               }
             }
             });
-            $('#inside-collection').append(`<div class="d-flex align-items-stretch" id="${i}">
+            $('#inside-collection').append(`<div class="search-card" id="${i}">
             <div class="card" style="width: 350px; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
         <div class="card-tools z-2 d-flex position-relative flex-wrap">
             <button type="button" data-bs-toggle="modal" data-bs-target="#editobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
@@ -473,20 +655,26 @@ const editobjToast = toast.appendTo('.toast-container')
       </div>
       </div>`)
           }
+          $('#insertbtn').prop("disabled", false);
+          $('#insertbtn').data('bs-json', `${JSON.stringify(data[1])}`);
+          $('#col-selector').prop("disabled", false)
+          $('#search-bar').prop("disabled", false)
+      $(element).prop("disabled", false)
+        $(element).find('#icon').show()
+        $(element).find('#spinner').hide()
         })
         .catch(function(error) {
             console.error('Error:', error);
         });
         }, 1000);
   }
+  
   $(document).ready(function(){
     load_cards()
     $('input[type="radio"][name="collection"]').change(function(){
        load_cards()
     });
 });
-
-
   </script>
   </body>
 </html>
