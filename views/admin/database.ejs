@@ -87,31 +87,8 @@
   </div>
 
   <!-- Toasts, Modals, ect -->
-
-  <div aria-live="polite" aria-atomic="true" class="position-relative">
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="transition: height 0.5s ease-in-out;">
-  <div id="copyToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
-      <div class="toast-body">
-        Successfully Copied JSON Of Object.
-      </div>
-  </div>
-  <div id="deleteToast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
-      <div class="toast-body">
-        Successfully Deleted Object From Collection
-      </div>
-  </div>
-  <div id="editObjToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
-    <div class="toast-body">
-      Successfully Saved Changes
-    </div>
-</div>
-<div id="addObjToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="2000">
-  <div class="toast-body">
-    Successfully Inserted Object
-  </div>
-</div>
-</div>
-</div>
+  
+  <%- include('../partials/toasts') %>
 
 <!-- Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -128,7 +105,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger deleteModal-confirm" onclick="deleteObj(this)" data-bs-dismiss="modal" id="deleteModal-confirm">Confirm Deletion</button>
+        <button type="button" class="btn btn-danger deleteModal-confirm" onclick="deleteObj(this)" id="deleteModal-confirm">Confirm Deletion</button>
       </div>
     </div>
   </div>
@@ -148,7 +125,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-warning editobjModal-confirm" onclick="editObj(this)" data-bs-dismiss="modal" id="editobjModal-confirm">Save Changes</button>
+        <button type="button" class="btn btn-warning editobjModal-confirm" onclick="editObj(this)" id="editobjModal-confirm">Save Changes</button>
       </div>
     </div>
   </div>
@@ -174,30 +151,62 @@
   </div>
 </div>
 
+<div class="modal fade" id="cloneobjModal" tabindex="-1" aria-labelledby="cloneobjModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="cloneobjModalLabel">Edit Object Clone</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-center" id="cloneobjModal-content">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success cloneobjModal-confirm" onclick="cloneObj(this)" data-bs-dismiss="modal" id="cloneobjModal-confirm">Clone Object</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 </main>
 <script>
-$(document).ready(function(){
+  $(document).ready(function(){
+    let debounceTimer;
+
     $("#search-bar").on("input", function() {
-        let searchText = $(this).val().trim().toLowerCase();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            performSearch();
+        }, 1000);
+    });
+
+    function performSearch() {
+        let searchText = $("#search-bar").val().trim().toLowerCase();
         let regex = new RegExp(searchText, "gi");
         $(".search-card").each(function() {
-          let cardText2 = $(this).text().toLowerCase();
+            let cardText2 = $(this).text().toLowerCase();
             $(this).find("p").each(function() {
                 let cardText = $(this).text().toLowerCase().replace('<span style="background-color: rgba(0, 38, 255, 0.6); font-size: 17px; font-weight: bold;">', '').replace('</span>', '');
+                if(searchText.length === 0){
+                  $(this).html(cardText);
+                }else{
                 let markedText = cardText.replace(regex, function(match) {
-        return '<span style="background-color: rgba(0, 38, 255, 0.6); font-size: 17px; font-weight: bold;">' + match + '</span>';
-    });
+                    return '<span style="background-color: rgba(0, 38, 255, 0.6); font-size: 17px; font-weight: bold;">' + match + '</span>';
+                });
                 $(this).html(markedText);
+              }
             });
             if (cardText2.includes(searchText)) {
                 $(this).show();
             } else {
                 $(this).hide(); 
             }
-
         });
-    });
+    }
 });
 
   function exp_arr(element) {
@@ -215,18 +224,24 @@ $(document).ready(function(){
             .select();
         document.execCommand("copy");
         textarea.remove();
-const toast = $('#copyToast').clone(true)
-const copyToast = toast.appendTo('.toast-container')
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(copyToast)
-    toastBootstrap.show()
+        toast('Succcessfully Copied JSON Object', 'success', 3000)
     }
 
     function deleteObj(element) {
-      load_cards()
-      const toast = $('#deleteToast').clone(true)
-const deleteToast = toast.appendTo('.toast-container')
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(deleteToast)
-    toastBootstrap.show()
+      axios.post('/api/database/delete', {
+    collection: `${$('input[type="radio"][name="collection"]:checked').attr('id')}`,
+    object_no: `${$(element).attr('id')}`
+  }).then(function (res) {
+  bootstrap.Modal.getInstance('#deleteModal').hide()
+  load_cards()
+  toast('Successfully Deleted Object From Collection', 'warning', 3000)
+  })
+  .catch(function (error) {
+    console.log(error)
+    if(error.response.status == 401){
+      toast('Failed Delete Object From Collection, Check Server Console For Info.', 'danger', 3000)
+    }
+  });
     }
 
     const deleteModal = document.getElementById('deleteModal')
@@ -242,12 +257,21 @@ const deleteToast = toast.appendTo('.toast-container')
 
   function editObj(element) {
     let jsondata = $('#editobjModal-content').data('bs-json')
- // console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'editobj')))
- load_cards()
-      const toast = $('#editObjToast').clone(true)
-const editobjToast = toast.appendTo('.toast-container')
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(editobjToast)
-    toastBootstrap.show()
+ axios.post('/api/database/edit', {
+    collection: `${$('input[type="radio"][name="collection"]:checked').attr('id')}`,
+    object_no: `${$(element).attr('id')}`,
+    json: JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'editobj'))
+  }).then(function (res) {
+  bootstrap.Modal.getInstance('#editobjModal').hide()
+  load_cards()
+ toast('Successfully Saved Changes', 'success', 3000)
+  })
+  .catch(function (error) {
+    console.log(error)
+    if(error.response.status == 401){
+      toast('Failed To Save Changes, Check Server Console For Info.', 'danger', 3000)
+    }
+  });
     }
 
   const editobjModal = document.getElementById('editobjModal')
@@ -263,12 +287,21 @@ const editobjToast = toast.appendTo('.toast-container')
 
   function addObj(element) {
     let jsondata = $('#addobjModal-content').data('bs-json')
-    // console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.addobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'addobj')))
+  axios.post('/api/database/create', {
+    collection: `${$('input[type="radio"][name="collection"]:checked').attr('id')}`,
+    object_no: `${$(element).attr('id')}`,
+    json: JSON.parse(build_json(JSON.parse(jsondata), `${$('.addobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'addobj'))
+  }).then(function (res) {
+  bootstrap.Modal.getInstance('#addobjModal').hide()
   load_cards()
-      const toast = $('#addObjToast').clone(true)
-const addobjToast = toast.appendTo('.toast-container')
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(addobjToast)
-    toastBootstrap.show()
+  toast('Successfully Inserted Object', 'success', 3000)
+  })
+  .catch(function (error) {
+    console.log(error)
+    if(error.response.status == 401){
+      toast('Failed To Insert Object, Check Server Console For Info.', 'danger', 3000)
+    }
+  });
     }
 
   const addobjModal = document.getElementById('addobjModal')
@@ -282,6 +315,36 @@ const addobjToast = toast.appendTo('.toast-container')
     $('#addobjModal-content').append(create_add_card(JSON.parse(jsondata), `${objno}_${Math.round(Math.random()*9999)}`))
   })
 
+  function cloneObj(element) {
+    let jsondata = $('#cloneobjModal-content').data('bs-json')
+  axios.post('/api/database/create', {
+    collection: `${$('input[type="radio"][name="collection"]:checked').attr('id')}`,
+    object_no: `${$(element).attr('id')}`,
+    json: JSON.parse(build_json(JSON.parse(jsondata), `${$('.cloneobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'cloneobj'))
+  }).then(function (res) {
+  bootstrap.Modal.getInstance('#cloneobjModal').hide()
+  load_cards()
+  toast('Successfully Cloned Object', 'success', 3000)
+  })
+  .catch(function (error) {
+    console.log(error)
+    if(error.response.status == 401){
+      toast('Failed To Clone Object, Check Server Console For Info.', 'danger', 3000)
+    }
+  });
+    }
+
+  const cloneobjModal = document.getElementById('cloneobjModal')
+  cloneobjModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget
+    const objno = button.getAttribute('data-bs-objno')
+    const jsondata = $('#insertbtn').data('bs-json')
+    $('.cloneobjModal-confirm').attr('id', `${objno}`)
+    $('#cloneobjModal-content').empty()
+    $('#cloneobjModal-content').data('bs-json', jsondata)
+    $('#cloneobjModal-content').append(create_edit_card(JSON.parse(jsondata), `${objno}_${Math.round(Math.random()*9999)}`))
+  })
+
   function create_add_card(data, i) {
             let collection = data
             let card_text = '';
@@ -289,7 +352,7 @@ const addobjToast = toast.appendTo('.toast-container')
 
             function inputtype(type) {
               if(type.includes('boolean')){
-                return true
+                return false
               }
               if(type.includes("num")){
                 return 0
@@ -343,6 +406,8 @@ const addobjToast = toast.appendTo('.toast-container')
             }
 
             keys.forEach(key => {
+              if(key === "_id"){
+              }else{
               if(Array.isArray(collection[key])){
                 card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
@@ -367,7 +432,8 @@ const addobjToast = toast.appendTo('.toast-container')
 </span>`
               }
             }
-            })
+  }
+})
             return `<div class="d-flex align-items-stretch" id="${i}">
             <div class="card" style="width: max-content; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
         <div class="card-body">
@@ -429,6 +495,8 @@ const addobjToast = toast.appendTo('.toast-container')
             }
 
             keys.forEach(key => {
+              if(key === "_id"){
+              }else{
               if(Array.isArray(collection[key])){
             card_text += `"${key}" : [
             ${handleArr(collection[key], `${i}_${key}`)}
@@ -442,6 +510,7 @@ const addobjToast = toast.appendTo('.toast-container')
                card_text += `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))},`
               }
             }
+          }
             });
       let text = `{
         ${card_text}}`
@@ -501,6 +570,8 @@ const addobjToast = toast.appendTo('.toast-container')
             }
 
             keys.forEach(key => {
+              if(key === "_id"){
+              }else{
               if(Array.isArray(collection[key])){
                 card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
@@ -525,6 +596,7 @@ const addobjToast = toast.appendTo('.toast-container')
 </span>`
               }
             }
+          }
             })
             return `<div class="d-flex align-items-stretch" id="${i}">
             <div class="card" style="width: max-content; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
@@ -570,7 +642,7 @@ const addobjToast = toast.appendTo('.toast-container')
         loading_cards()
 
         setTimeout(() => {
-          axios.get(`/api/database/${selectedCollection}`)
+          axios.get(`/api/database?collection=${selectedCollection}`)
         .then(function(response) {
           $('#inside-collection').empty();
             const data = response.data
@@ -646,7 +718,7 @@ const addobjToast = toast.appendTo('.toast-container')
         <div class="card-tools z-2 d-flex position-relative flex-wrap">
             <button type="button" data-bs-toggle="modal" data-bs-target="#editobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
             <button onclick="copyJSON(this)" id="copyToastBtn" type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg><span id="json" style="display: none;">${JSON.stringify(collection)}</span></button>
-            <button type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#cloneobjModal" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-objno="${i}" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
         </div>
         <div class="card-body">
@@ -666,7 +738,7 @@ const addobjToast = toast.appendTo('.toast-container')
         .catch(function(error) {
             console.error('Error:', error);
         });
-        }, 1000);
+        }, 500);
   }
   
   $(document).ready(function(){

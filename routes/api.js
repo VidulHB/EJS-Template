@@ -1,6 +1,7 @@
 const express = require("express");
 const api = express.Router();
 const chalk = require("chalk");
+const mongoose = require('mongoose');
 
 function log() {
   console.log(chalk.bgCyanBright.bold(" [Router] API Successfully Booted "));
@@ -8,68 +9,52 @@ function log() {
 
 setTimeout(log, 1000);
 
-// let data = [
-//   {
-//     _id: "23c323w42344",
-//     name: "Vidul",
-//     age: "16",
-//     username: "VidulHB",
-//     password: "P@ssw0rd",
-//     array: [
-//       {_id: "23c323w42344",
-//     name: "Vidul",
-//     age: "16",
-//     username: "VidulHB",
-//     password: "P@ssw0rd",
-//   },
-//   {
-//     _id: "23c323w42342324",
-//     name: "Senura",
-//     age: "15",
-//     username: "WPIS_Developer",
-//     password: "P@ssw0rd2"
-//   },
-//   {
-//     _id: "233243wc23c32",
-//     name: "Gaviru",
-//     age: "16",
-//     username: "GaviruFer",
-//     password: "P@ssw0rd3"
-//   }
-//   ]
-//   },
-//   {
-//     _id: "23c323w42342324",
-//     name: "Senura",
-//     age: "15",
-//     username: "WPIS_Developer",
-//     password: "P@ssw0rd2"
-//   },
-//   {
-//     _id: "233243wc23c32",
-//     name: "Gaviru",
-//     age: "16",
-//     username: "GaviruFer",
-//     password: "P@ssw0rd3"
-//   }
-// ];
-// res.json(data);
-
-api.get("/database/users", async (req, res, next) => {
-  res.redirect('https://jsonplaceholder.typicode.com/users')
+api.get("/database", async (req, res, next) => {
+  const collection = require(`../models/${req.query.collection}`)
+ res.json(await collection.find({}).exec())
 });
 
-api.get("/database/todos", async (req, res, next) => {
-  res.redirect('https://jsonplaceholder.typicode.com/todos')
+api.get("/database/collections", async (req, res, next) => {
+  res.json(await mongoose.connection.db.listCollections().toArray())
 });
 
-api.get("/database/posts", async (req, res, next) => {
-  res.redirect('https://jsonplaceholder.typicode.com/posts')
-});
+api.post('/database/delete', async (req, res, next) => {
+  const post_data = req.body
+  const collection = require(`../models/${post_data.collection}`)
+  const data = await collection.find({}).exec()
+  try {
+  collection.findOneAndDelete(data[Number(`${post_data.object_no}`)]).exec()
+  res.status(200).json({ "messsage": "success"})
+  } catch(err){
+    res.status(401).json({ "message": "error"})
+    console.log('error: ' + err)
+  }
+})
 
-api.get("/database/photos", async (req, res, next) => {
-  res.redirect('https://jsonplaceholder.typicode.com/photos')
-});
+api.post('/database/edit', async (req, res, next) => {
+  const post_data = req.body
+  const collection = require(`../models/${post_data.collection}`)
+  const data = await collection.find({}).exec()
+  try {
+  collection.findOneAndUpdate(data[Number(`${post_data.object_no}`)], { $set: post_data.json}).exec()
+  res.status(200).json({ "messsage": "success"})
+  } catch(err){
+    res.status(401).json({ "message": "error"})
+    console.log('error: ' + err)
+  }
+})
+
+api.post('/database/create', async (req, res, next) => {
+  const post_data = req.body
+  const collection = require(`../models/${post_data.collection}`)
+  try {
+  collection.create(post_data.json)
+  res.status(200).json({ "messsage": "success"})
+  } catch(err){
+    res.status(401).json({ "message": "error"})
+    console.log('error: ' + err)
+  }
+})
 
 // api.post('/login', async (req, res, next) => {
 //   const info = req.body
