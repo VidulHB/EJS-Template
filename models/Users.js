@@ -10,13 +10,13 @@ const Schema = mongoose.Schema;
       street: String,
       suite: String,
       city: String,
-      zipcode: Number,
+      zipcode: String,
       geo: {
-        lat: Number,
-        lng: Number
+        lat: String,
+        lng: String
       }
     },
-    phone: Number,
+    phone: String,
     website: String,
     company: {
       name: String,

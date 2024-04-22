@@ -38,5 +38,10 @@ admin.get('/stats', async (req, res, next) => {
     user: req.session.user
   });
 });
+admin.get('/audits', async (req, res, next) => {
+  res.render('admin/auditlogs.ejs', {
+    user: req.session.user
+  });
+});
 
 module.exports = admin;

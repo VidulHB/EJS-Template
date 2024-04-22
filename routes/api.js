@@ -109,7 +109,7 @@ api.post('/database/delete', async (req, res, next) => {
   const collection = require(`../models/${post_data.collection}`)
   const data = await collection.find({}).exec()
   try {
-  collection.findOneAndDelete(data[Number(`${post_data.object_no}`)]).exec()
+  collection.findOneAndDelete({ _id : data[Number(`${post_data.object_no}`)]._id }).exec()
   res.status(200).json({ "messsage": "success"})
   } catch(err){
     res.status(401).json({ "message": "error"})
@@ -122,7 +122,7 @@ api.post('/database/edit', async (req, res, next) => {
   const collection = require(`../models/${post_data.collection}`)
   const data = await collection.find({}).exec()
   try {
-  collection.findOneAndUpdate(data[Number(`${post_data.object_no}`)], { $set: post_data.json}).exec()
+  collection.findOneAndUpdate({ _id : data[Number(`${post_data.object_no}`)]._id }, { $set: post_data.json}).exec()
   res.status(200).json({ "messsage": "success"})
   } catch(err){
     res.status(401).json({ "message": "error"})

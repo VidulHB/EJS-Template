@@ -249,6 +249,7 @@
 
   function editObj(element) {
     let jsondata = $('#editobjModal-content').data('bs-json')
+    //console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'editobj')))
  axios.post('/api/database/edit', {
     collection: `${$('input[type="radio"][name="collection"]:checked').attr('id')}`,
     object_no: `${$(element).attr('id')}`,
@@ -460,9 +461,7 @@
                 Object.keys(array[i2]).forEach(key => {
                   objects_children += `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))}, `
                 })
-            objects += `{
-              ${object_children}
-          },`
+            objects += `{${object_children}},`
               }
               return objects;
             }
@@ -474,13 +473,9 @@
               Object.keys(nest).forEach(key => {
                 i2++
                 if (typeof nest[key] === 'object') {
-            objects += `
-              "${key}" : {
-                ${handleNested(nest[key], `${CardID}_${i2}`)}
-              },
-            `
+            objects += `"${key}" : {${handleNested(nest[key], `${CardID}_${i2}`)}},`
               }else{
-                  objects	+= `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))}, `
+                  objects	+= `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))},`
               }
               });
               return objects;
@@ -490,23 +485,18 @@
               if(key === "_id"){
               }else{
               if(Array.isArray(collection[key])){
-            card_text += `"${key}" : [
-            ${handleArr(collection[key], `${i}_${key}`)}
-            ],`
+            card_text += `"${key}" : [${handleArr(collection[key], `${i}_${key}`)}],`
               }else { 
                 if (typeof collection[key] === 'object') {
-            card_text += `"${key}" : {
-              ${handleNested(collection[key], `${i}_${key}`)}
-            },`
+            card_text += `"${key}" : {${handleNested(collection[key], `${i}_${key}`)}},`
               }else{
                card_text += `"${key}" : ${input_type($(`#${modal}Modal-content`).find(`#${key}`).val(), $(`#${modal}Modal-content`).find(`#${key}`).prop("type"))},`
               }
             }
           }
             });
-      let text = `{
-        ${card_text}}`
-      text = text.replace(',}', '}')
+      let text = `{ ${card_text}}`
+      text = text.replaceAll(',}', '}')
       return text
 
   }

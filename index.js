@@ -18,6 +18,7 @@ mongoose.connect(MongoDBURI, {
   useNewUrlParser: true,
 });
 const Database = mongoose.connection;
+Database.watch().on('change', data => console.log(data));
 Database.on("error", console.error.bind(console, chalk.bgRedBright.bold(' [MongoDB] Failed To Connect To Database : \n')));
 Database.once("open", () => { console.log(chalk.bgGreenBright.bold(' [MongoDB] Successfuly Connected To Database '))});
 

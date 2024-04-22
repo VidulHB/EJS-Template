@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Vidul">
+    <title>Audit Logs | Admin Panel</title>
+
+    <%- include('../partials/links') %>   
+
+<style>
+       html, body {
+        height: 100%;
+        font-family: cursive;
+        overflow: hidden;
+      }
+      .card-tools{
+        display: none;
+      }
+      .card-tool{
+        display: none;
+        width: 30px;
+        height: 30px;
+        margin: 10px;
+      }
+      .card:hover .card-tools .card-tool{
+        display: block;
+      }
+      .inner-arr-txt{
+        margin-left: 30px;
+        margin-bottom: 0px;
+      }
+      .exp-arr:hover {
+        cursor: pointer;
+      }
+      
+/* ::-webkit-scrollbar {
+  width: 5px;
+} */
+</style>
+
+  </head>
+  <body>
+
+    <!-- Icons -->
+    <%- include('../partials/icons') %>
+
+<main class="d-flex">
+
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar', {page: "audit"}) %>
+
+  <!-- Body -->
+  <div class="container" style="max-height: 100%;">
+
+    <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px; margin-bottom: -15px;">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="pills-database-tab" data-bs-toggle="pill" data-bs-target="#pills-database" type="button" role="tab" aria-controls="pills-database" aria-selected="true">Database</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
+            </li>
+          </ul>
+</div>
+
+  <div class="b-divider" style="height: 5px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;"></div>
+
+  <div style="height: 86.5%; width: 1200px; overflow: scroll; overflow-x: hidden; position: fixed;">
+  <div class="d-flex gap-3 flex-wrap">
+    <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active d-flex gap-3 flex-wrap" id="pills-database" role="tabpanel" aria-labelledby="pills-database-tab" tabindex="0">
+        
+      <div class="card mb-3" data-bs-type="success" style="width: 350px; height: min-content;">
+        <div class="card-header text-bg-success" style="border-radius: 0.312rem;" data-bs-toggle="collapse" data-bs-target="#c1" aria-expanded="false" aria-controls="c1">
+          Created Object
+           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
+            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down" id="icon"/></svg></span> 
+            <br> <span style="font-size: 13px;">21th Saturday 2024</span>
+          </div>
+        <div class="card-body collapse" id="c1">
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : 2424c323d4322d33s23xd32c</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : users</p>
+          <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr"  data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="false" aria-controls="a1" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16" id="action"><use id="icon" xlink:href="#caret-right"></use></svg>
+            </span>
+            <span>CreatedFields : Object (2)</span>
+            <p class="inner-arr-txt collapse object" id="a1">username : Vidul</p>
+            <p class="inner-arr-txt collapse object" id="a1">age : 16</p>
+            </div>
+        </div>
+      </div>
+
+      <div class="card mb-3" data-bs-type="warning" style="width: 350px; height: min-content;">
+        <div class="card-header text-bg-warning" style="border-radius: 0.312rem;" data-bs-toggle="collapse" data-bs-target="#c2" aria-expanded="false" aria-controls="c2">
+          Updated Object
+           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
+            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down" id="icon"/></svg></span> 
+            <br> <span style="font-size: 13px;">20th Saturday 2024</span>
+          </div>
+        <div class="card-body collapse" id="c2">
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : 2424c323d2d33s23xd3c232c</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : users</p>
+          <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16" id="action"><use id="icon" xlink:href="#caret-right"></use></svg>
+            </span>
+            <span>UpdatedFields : Object (2)</span>
+            <p class="inner-arr-txt collapse object" id="a2">username : Senura</p>
+            <p class="inner-arr-txt collapse object" id="a2">age : 16</p>
+            </div>
+        </div>
+      </div>
+
+      <div class="card mb-3" data-bs-type="danger" style="width: 350px; height: min-content;">
+        <div class="card-header text-bg-danger" style="border-radius: 0.312rem;" data-bs-toggle="collapse" data-bs-target="#c3" aria-expanded="false" aria-controls="c3">
+          Deleted Object
+           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
+            <svg class="bi pe-none me-2" width="25" height="25" id="action"><use xlink:href="#caret-down" id="icon"/></svg></span> 
+            <br> <span style="font-size: 13px;">19th Saturday 2024</span>
+          </div>
+        <div class="card-body collapse" id="c3">
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : 2424c32342424s23xd3c332c</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : users</p>
+          <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
+            <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3" style="margin-left: -20px; margin-right: -10px;">
+              <svg class="bi pe-none me-2" width="16" height="16"><use id="icon" xlink:href="#caret-right"></use></svg>
+            </span>
+            <span>Fields : Object (2)</span>
+            <p class="inner-arr-txt collapse object" id="a3">username : Gaviru</p>
+            <p class="inner-arr-txt collapse object" id="a3">age : 15</p>
+            </div>
+        </div>
+      </div>
+     
+    
+
+     </div>
+      </div>
+  </div>
+</div>
+</main>
+<script>
+const collapsables = document.querySelectorAll('.collapse')
+document.addEventListener('hide.bs.collapse', event => {
+  if(event.target.classList.contains('collapse')){
+  $(event.target).parent().removeClass(`border-${$(event.target).parent().data('bs-type')}`)
+  $(event.target).parent().find('.card-header').css({
+    "border-top-left-radius": "0.312rem",
+    "border-top-right-radius": "0.312rem",
+    "border-bottom-left-radius": "0.312rem",
+    "border-bottom-right-radius": "0.312rem",
+  })
+  if(event.target.classList.contains('object')){
+    $(event.target).parent().find('#icon').attr('xlink:href', '#caret-right')
+  }else{
+  $(event.target).parent().find('#action#icon').attr('xlink:href', '#caret-down')
+  }
+}
+})
+document.addEventListener('show.bs.collapse', event => {
+  if(event.target.classList.contains('collapse')){
+  $(event.target).parent().addClass(`border-${$(event.target).parent().data('bs-type')}`)
+  $(event.target).parent().find('.card-header').css({
+    "border-top-left-radius": "0.312rem",
+    "border-top-right-radius": "0.312rem",
+    "border-bottom-left-radius": "0",
+    "border-bottom-right-radius": "0",
+  })
+
+  if(event.target.classList.contains('object')){
+    $(event.target).parent().find('#icon').attr('xlink:href', '#caret-down')
+  }else{
+  $(event.target).parent().find('#action#icon').attr('xlink:href', '#caret-up')
+  }
+}
+})
+</script>
+</html>
