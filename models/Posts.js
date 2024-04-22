@@ -7,6 +7,6 @@ const Schema = mongoose.Schema;
     title: String,
     body: String
 })),
-  (Posts = mongoose.model("Posts", PostSchema));
+  (Posts = mongoose.model("posts", PostSchema));
 
 module.exports = Posts;

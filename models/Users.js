@@ -24,6 +24,6 @@ const Schema = mongoose.Schema;
       bs: String
     }
 })),
-  (Users = mongoose.model("Users", UserSchema));
+  (Users = mongoose.model("users", UserSchema));
 
 module.exports = Users;

@@ -7,6 +7,6 @@ const Schema = mongoose.Schema;
     title: String,
     completed: Boolean
 })),
-  (Todos = mongoose.model("Todos", TodoSchema));
+  (Todos = mongoose.model("todos", TodoSchema));
 
 module.exports = Todos;

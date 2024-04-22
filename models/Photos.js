@@ -8,6 +8,6 @@ const Schema = mongoose.Schema;
     url: String,
     thumbnailUrl: String
 })),
-  (Photos = mongoose.model("Photos", PhotoSchema));
+  (Photos = mongoose.model("photos", PhotoSchema));
 
 module.exports = Photos;

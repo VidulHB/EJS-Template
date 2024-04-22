@@ -53,17 +53,9 @@
     <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px;">
         <div style="height: 35px;">
             <button type="button" id="col-selector" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              Collection: collection1
+              Collection: Loading...
             </button>
-            <ul class="dropdown-menu">
-                <li><input type="radio" class="btn-check" name="collection" id="Posts" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary dropdown-item" for="Posts">Posts</label></li>
-                <li><input type="radio" class="btn-check" name="collection" id="Users" autocomplete="off">
-                    <label class="btn btn-outline-primary dropdown-item" for="Users">Users</label></li>
-                <li><input type="radio" class="btn-check" name="collection" id="Todos" autocomplete="off">
-                    <label class="btn btn-outline-primary dropdown-item" for="Todos">Todos</label></li>
-                <li><input type="radio" class="btn-check" name="collection" id="Photos" autocomplete="off">
-                    <label class="btn btn-outline-primary dropdown-item" for="Photos">Photos</label></li>
+            <ul class="dropdown-menu" id="collections-sel">
             </ul>
           </div>
           <div class="input-group">
@@ -87,7 +79,7 @@
   </div>
 
   <!-- Toasts, Modals, ect -->
-  
+
   <%- include('../partials/toasts') %>
 
 <!-- Modal -->
@@ -308,11 +300,11 @@
   addobjModal.addEventListener('show.bs.modal', event => {
     const button = event.relatedTarget
     const objno = button.getAttribute('data-bs-objno')
-    const jsondata = $('#insertbtn').data('bs-json')
+    const schema = $('#insertbtn').data('bs-schema')
     $('.addobjModal-confirm').attr('id', `${objno}`)
     $('#addobjModal-content').empty()
-    $('#addobjModal-content').data('bs-json', jsondata)
-    $('#addobjModal-content').append(create_add_card(JSON.parse(jsondata), `${objno}_${Math.round(Math.random()*9999)}`))
+    $('#addobjModal-content').data('bs-json', schema)
+    $('#addobjModal-content').append(create_add_card(JSON.parse(schema), `${objno}_${Math.round(Math.random()*9999)}`))
   })
 
   function cloneObj(element) {
@@ -338,7 +330,7 @@
   cloneobjModal.addEventListener('show.bs.modal', event => {
     const button = event.relatedTarget
     const objno = button.getAttribute('data-bs-objno')
-    const jsondata = $('#insertbtn').data('bs-json')
+    const jsondata = button.getAttribute('data-bs-json')
     $('.cloneobjModal-confirm').attr('id', `${objno}`)
     $('#cloneobjModal-content').empty()
     $('#cloneobjModal-content').data('bs-json', jsondata)
@@ -633,6 +625,7 @@
     let element = '#refreshbtn'
     let selectedCollection = $('input[type="radio"][name="collection"]:checked').attr('id');
         $('#col-selector').text(`Collection: ${selectedCollection}`)
+        $('#col-selector').data("bs-collection", `${selectedCollection}`)
         $('#insertbtn').prop("disabled", true)
         $('#col-selector').prop("disabled", true)
         $('#search-bar').prop("disabled", true)
@@ -642,7 +635,7 @@
         loading_cards()
 
         setTimeout(() => {
-          axios.get(`/api/database?collection=${selectedCollection}`)
+          axios.get(`/api/database/find?collection=${selectedCollection}`)
         .then(function(response) {
           $('#inside-collection').empty();
             const data = response.data
@@ -718,7 +711,7 @@
         <div class="card-tools z-2 d-flex position-relative flex-wrap">
             <button type="button" data-bs-toggle="modal" data-bs-target="#editobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
             <button onclick="copyJSON(this)" id="copyToastBtn" type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg><span id="json" style="display: none;">${JSON.stringify(collection)}</span></button>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#cloneobjModal" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#cloneobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-objno="${i}" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
         </div>
         <div class="card-body">
@@ -728,9 +721,9 @@
       </div>`)
           }
           $('#insertbtn').prop("disabled", false);
-          $('#insertbtn').data('bs-json', `${JSON.stringify(data[1])}`);
           $('#col-selector').prop("disabled", false)
           $('#search-bar').prop("disabled", false)
+          $('#insertbtn').data('bs-schema', `${$('input[type="radio"][name="collection"]:checked').data('bs-schema')}`)
       $(element).prop("disabled", false)
         $(element).find('#icon').show()
         $(element).find('#spinner').hide()
@@ -740,13 +733,39 @@
         });
         }, 500);
   }
-  
+
+  function checkLoad(element) {
+    if($(element).attr('id') === $('#col-selector').data("bs-collection")){
+
+    }else{
+      load_cards()
+    }
+  }
+
   $(document).ready(function(){
-    load_cards()
-    $('input[type="radio"][name="collection"]').change(function(){
-       load_cards()
-    });
-});
+    loading_cards()
+    axios.get(`/api/database/collections`)
+        .then(function(response) {
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
+            if(i === response.data.length-1){
+              $('#col-selector').text(`Collection: ${element.name}`)
+           $('#collections-sel').prepend(`<li><input onclick="checkLoad(this)" type="radio" class="btn-check" name="collection" id='${element.name}' autocomplete="off" checked>
+                    <label class="btn btn-outline-primary dropdown-item" for="${element.name}">${element.name}</label></li>`)
+                    $(`#${element.name}`).data('bs-schema', `${element.json}`)
+            }else{
+              $('#collections-sel').prepend(`<li><input onclick="checkLoad(this)" type="radio" class="btn-check" name="collection" id='${element.name}' autocomplete="off">
+                    <label class="btn btn-outline-primary dropdown-item" for="${element.name}">${element.name}</label></li>`)
+                    $(`#${element.name}`).data('bs-schema', `${element.json}`)
+            }
+          }
+          load_cards()
+        }).catch(function(error){
+          toast('An Error Occured While Fetching Collections.')
+          console.log(error)
+        })
+})
+
   </script>
   </body>
 </html>
