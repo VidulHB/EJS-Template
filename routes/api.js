@@ -94,7 +94,7 @@ api.get("/database/collections", async (req, res, next) => {
             reject(error); 
           }
         }
-      }, 5)
+      }, 100)
     })
     promises.push(promise);
 
