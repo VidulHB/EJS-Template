@@ -86,7 +86,7 @@ api.get("/database/collections", async (req, res, next) => {
         for (let i = 0; i < data.length; i++) {
           const element = data[i];
           try {
-            const collection = require(`../models/${element.name}`);
+            const collection = require(`../models/${element.name}.js`);
             let collection_schema = mongoose.model(`${element.name}`).schema.obj;
             data[i].json = `${build_json(collection_schema)}`;
             resolve(); 
