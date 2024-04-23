@@ -15,6 +15,16 @@ api.get("/database/find", async (req, res, next) => {
  res.json(await collection.find({}).sort({ _id: 'asc' }).lean().exec())
 });
 
+api.get("/database/audits", async (req, res, next) => {
+  const collection = require(`../auditmodel`)
+  let page = req.query.page
+  if(!page) page = 1;
+  let limit = 150
+ res.json({
+  pages: Math.ceil((await collection.countDocuments({}).exec())/limit),
+  pagedata: await collection.find({}).sort({ _id: 'desc' }).lean().skip(((page-1)*limit)).limit(limit).exec()
+ })
+});
 
 function build_json(data) {
   let collection = data
@@ -78,7 +88,10 @@ api.get("/database/collections", async (req, res, next) => {
         const element = data[i];
       fs.access(`./models/${element.name}.js`, fs.constants.F_OK, async (err) => {
         if (err) {
-          data.splice(i, 1)
+          const index = data.findIndex(obj => obj.name === `${element.name}`);
+  if (index !== -1) {
+    data.splice(index, 1);
+  }
         }
       })
        }
@@ -94,7 +107,7 @@ api.get("/database/collections", async (req, res, next) => {
             reject(error); 
           }
         }
-      }, 500)
+      }, 300)
     })
     promises.push(promise);
 

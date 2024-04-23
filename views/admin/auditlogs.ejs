@@ -35,10 +35,6 @@
       .exp-arr:hover {
         cursor: pointer;
       }
-      
-/* ::-webkit-scrollbar {
-  width: 5px;
-} */
 </style>
 
   </head>
@@ -63,23 +59,34 @@
             <li class="nav-item" role="presentation">
               <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
             </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
-            </li>
           </ul>
 </div>
 
   <div class="b-divider" style="height: 5px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;"></div>
 
-  <div style="height: 86.5%; width: 1200px; overflow: scroll; overflow-x: hidden; position: fixed;">
-  <div class="d-flex gap-3 flex-wrap">
-    <div class="tab-content" id="pills-tabContent">
+  <div class="position-relative" style="height: 650px; width: 1200px; overflow: scroll; overflow-x: hidden;">
+    <div style="height: 75px; margin: 1100px; margin: auto;">
+      <nav class="position-absolute top-0 start-50 translate-middle-x">
+        <ul class="pagination">
+          <li class="page-item disabled" id="prev">
+            <a class="page-link">Previous</a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item" aria-current="page">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item" id="next">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+      </div>
+    <div class="tab-content" id="pills-tabContent" style="width: 1100px; margin:auto;">
     <div class="tab-pane fade show active d-flex gap-3 flex-wrap" id="pills-database" role="tabpanel" aria-labelledby="pills-database-tab" tabindex="0">
+
         
-      <div class="card mb-3" data-bs-type="success" style="width: 350px; height: min-content;">
+      <!-- <div class="card mb-3" data-bs-type="success" style="width: 350px; height: min-content;">
         <div class="card-header text-bg-success" style="border-radius: 0.312rem; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#c1" aria-expanded="false" aria-controls="c1">
           Created Object
            <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
@@ -140,16 +147,183 @@
             <p class="inner-arr-txt collapse object" id="a3">age : 15</p>
             </div>
         </div>
-      </div>
-     
-    
-
-     </div>
-      </div>
+      </div> -->
+  </div>
   </div>
 </div>
 </main>
 <script>
+
+  function loading_cards() {
+  function getRandomItems(array, count) {
+  let shuffledArray = array.slice();
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+  return shuffledArray.slice(0, count);
+}
+    $('#pills-database').empty();
+        for (let i = 0; i < (Math.floor(Math.random()*100)+50); i++) {
+          $('#pills-database').append(`<div class="card mb-3" style="width: 350px; height: min-content;">
+        <div class="card-header text-bg-${getRandomItems(['success', 'warning', 'danger','success', 'warning', 'danger','success', 'warning', 'danger','success', 'warning', 'danger','success', 'warning', 'danger'], 1)} placeholder-glow" style="border-radius: 0.312rem;">
+          <span class="placeholder col-8" style="border-radius: 3px;"></span>
+            <br> 
+            <span class="placeholder placeholder-sm col-7" style="border-radius: 3px;"></span>
+          </div>
+      </div>`);
+        }
+  }
+  function load_cards() {
+        loading_cards()
+        let page = 1
+        if(!$('.pagination').hasClass('placeholder-glow')){
+            page = $('.pagination').find('.active').attr('id').replace('page_', '')
+          }
+
+        setTimeout(() => {
+          axios.get(`/api/database/audits?page=${page}`)
+        .then(function(response) {
+          if($('.pagination').hasClass('placeholder-glow')){
+            $('.pagination').empty()
+        $('.pagination').removeClass('placeholder-glow')
+        for (let i = 0; i < response.data.pages; i++) {
+          if(i === 0){
+            $('.pagination').append(`<li onclick="pages(this)" data-bs-pages="${response.data.pages}" class="page-item active" id="page_${i+1}"><a class="page-link" href="#">${i+1}</a></li>`)
+          }else{
+          $('.pagination').append(`<li onclick="pages(this)" data-bs-pages="${response.data.pages}" class="page-item" id="page_${i+1}"><a class="page-link" href="#">${i+1}</a></li>`)
+          }
+        }
+        $('.pagination').prepend(`<li onclick="prevpage(this)" class="page-item disabled prevbtn">
+            <a class="page-link">Previous</a>
+          </li>`)
+          if(response.data.pages === 1){
+        $('.pagination').append(`<li class="page-item disabled nextbtn">
+            <a class="page-link" href="#">Next</a>
+          </li>`)
+          }else{
+            $('.pagination').append(`<li  onclick="nextpage(this)" class="page-item nextbtn">
+            <a class="page-link" href="#">Next</a>
+          </li>`)
+          }
+        }
+        function type(operation) {
+          if(operation === 'update'){
+            return 'warning'
+          }
+          if(operation === 'insert'){
+            return 'success'
+          }
+          if(operation === 'delete'){
+            return 'danger'
+          }
+        }
+        function type2(operation) {
+          if(operation === 'update'){
+            return 'Updated Object'
+          }
+          if(operation === 'insert'){
+            return 'Inserted Object'
+          }
+          if(operation === 'delete'){
+            return 'Deleted Object'
+          }
+        }
+        $('#pills-database').empty()
+        for (let i = 0; i < response.data.pagedata.length; i++) {
+          const element = response.data.pagedata[i];
+          $('#pills-database').append(`
+          <div class="card mb-3" data-bs-type="${type(element.operation)}" style="width: 350px; height: min-content;">
+        <div class="card-header text-bg-${type(element.operation)}" style="border-radius: 0.312rem; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#c${i}" aria-expanded="false" aria-controls="c${i}">
+          ${type2(element.operation)}
+           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
+            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down" id="icon"/></svg></span> 
+            <br> <span style="font-size: 13px;">${new Date(element.walltime)}</span>
+          </div>
+        <div class="card-body collapse" id="c${i}">
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : ${element.documentKey}</p>
+          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : ${element.objcollection}</p>
+        </div>
+      </div>
+          `)
+          
+        }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+        });
+        }, 500);
+      }
+
+
+  $(document).ready(function(){
+    $('.pagination').empty()
+        $('.pagination').addClass('placeholder-glow')
+        for (let i = 0; i < (Math.floor(Math.random()*15)+2); i++) {
+          $('.pagination').append(`<li class="page-item disabled" style="border-radius: 10px;"><a class="page-link" href="#"><span class="placeholder bg-secondary placeholder-lg" style="width: 10px; border-radius: 2px;"></span></a></li>`)
+        }
+        $('.pagination').append(`<li class="page-item disabled">
+            <a class="page-link" href="#">Next</a>
+          </li>`)
+          $('.pagination').prepend(`<li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>`)
+    load_cards()
+  })
+
+
+  function pages(element) {
+  if($(element).attr('id')){
+  if(!$(element).hasClass('active')){
+    $('.pagination').find('.active').removeClass('active')
+    $(element).addClass('active')
+    if($('.pagination').find('.active').data('bs-pages').toString() === $('.pagination').find('.active').attr('id').replace('page_','').toString()){
+      $(".nextbtn").addClass('disabled')
+          $(".nextbtn").removeAttr('onclick')
+    }else{
+      $(".nextbtn").removeClass('disabled')
+      $(".nextbtn").attr('onclick', 'nextpage(this)')
+    }
+    if($('.pagination').find('.active').attr('id').replace('page_','') === '1'){
+      $(".prevbtn").addClass('disabled')
+          $(".prevbtn").removeAttr('onclick')
+    }else{
+      $(".prevbtn").removeClass('disabled')
+      $(".prevbtn").attr('onclick', 'prevpage(this)')
+    }
+
+    load_cards()
+  }
+}
+  }
+
+  function nextpage(element) {
+    if($('.pagination').find('.active').data('bs-pages') !== $('.pagination').find('.active').attr('id').replace('page_','')){
+    $('.pagination').find('.active').removeClass('active').next().addClass('active')
+    if($('.pagination').find('.active').data('bs-pages').toString() === $('.pagination').find('.active').attr('id').replace('page_','').toString()){
+      $(".nextbtn").addClass('disabled')
+      $(".nextbtn").removeAttr('onclick')
+    }else{
+      $(".nextbtn").removeClass('disabled')
+      $(".nextbtn").attr('onclick', 'nextpage(this)')
+    }
+    load_cards()
+    }
+  }
+
+  function prevpage(element) {
+    if($('.pagination').find('.active').attr('id').replace('page_','') !== '1'){
+    $('.pagination').find('.active').removeClass('active').prev().addClass('active')
+    if($('.pagination').find('.active').attr('id').replace('page_','') === '1'){
+      $(".prevbtn").addClass('disabled')
+      $(".prevbtn").removeAttr('onclick')
+    }else{
+      $(".prevbtn").removeClass('disabled')
+      $(".prevbtn").attr('onclick', 'prevpage(this)')
+    }
+    load_cards()
+    }
+  }
 const collapsables = document.querySelectorAll('.collapse')
 document.addEventListener('hide.bs.collapse', event => {
   if(event.target.classList.contains('collapse')){

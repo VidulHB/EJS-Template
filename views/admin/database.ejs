@@ -249,7 +249,6 @@
 
   function editObj(element) {
     let jsondata = $('#editobjModal-content').data('bs-json')
-    //console.log(JSON.parse(build_json(JSON.parse(jsondata), `${$('.editobjModal-confirm').attr('id')}_${Math.round(Math.random()*9999)}`, 'editobj')))
  axios.post('/api/database/edit', {
     collection: `${$('input[type="radio"][name="collection"]:checked').attr('id')}`,
     object_no: `${$(element).attr('id')}`,
@@ -344,10 +343,10 @@
             let keys = Object.keys(collection)
 
             function inputtype(type) {
-              if(type.includes('boolean')){
+              if(type === "Boolean"){
                 return false
               }
-              if(type.includes("num")){
+              if(type === "Number"){
                 return 0
               }
               return ""
@@ -360,7 +359,7 @@
                 Object.keys(array[i2]).forEach(key => {
                   objects_children += `<span class="input-group input-group-sm mb-3 collapse inner-arr-txt" id="${CardID}_${i2}" style="width: max-content; margin-right: 50px;">
   <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
-  <input type="${typeof array[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+  <input type="${typeof array[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(collection[key])}" aria-describedby="inputGroup-sizing-sm">
 </span>`
                 })
                 objects += `<div class="collapse inner-arr-txt" id="${CardID}">
@@ -391,7 +390,7 @@
               }else{
                   objects += `<span class="input-group input-group-sm mb-3 collapse inner-arr-txt" id="${CardID}" style="width: max-content; margin-right: 50px;">
   <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
-  <input type="${typeof nest[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+  <input type="${nest[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(collection[key])}" aria-describedby="inputGroup-sizing-sm">
 </span>`
               }
               });
@@ -421,7 +420,7 @@
               }else{
               card_text += `<span class="input-group input-group-sm mb-3">
   <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
-  <input type="${typeof collection[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+  <input type="${collection[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
 </span>`
               }
             }

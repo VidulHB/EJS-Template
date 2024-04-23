@@ -18,7 +18,31 @@ mongoose.connect(MongoDBURI, {
   useNewUrlParser: true,
 });
 const Database = mongoose.connection;
-Database.watch().on('change', data => console.log(data));
+Database.watch().on('change', (data) => {
+  if(!data.ns.coll.includes('audits')){
+    const audits = require('./auditmodel.js')
+    if(!data.updateDescription){
+      audits.create({
+        operation: data.operationType,
+        walltime: data.wallTime,
+      clusterTime: data.clusterTime,
+      objcollection: data.ns.coll,
+      documentKey: data.documentKey._id
+      })
+    }else{
+    audits.create({
+    operation: data.operationType,
+    walltime: data.wallTime,
+    clusterTime: data.clusterTime,
+    objcollection: data.ns.coll,
+    documentKey: data.documentKey._id,
+    updatedFields: data.updateDescription.updatedFields,
+    deletedFields: data.updateDescription.removedFields,
+    truncatedArrays: data.updateDescription.truncatedArrays
+    })
+  }
+  }
+});
 Database.on("error", console.error.bind(console, chalk.bgRedBright.bold(' [MongoDB] Failed To Connect To Database : \n')));
 Database.once("open", () => { console.log(chalk.bgGreenBright.bold(' [MongoDB] Successfuly Connected To Database '))});
 
