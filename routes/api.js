@@ -15,6 +15,23 @@ api.get("/database/find", async (req, res, next) => {
  res.json(await collection.find({}).sort({ _id: 'asc' }).lean().exec())
 });
 
+api.get("/system/restart", async (req, res, next) => {
+  res.status(200).json({"message": "restarting"})
+  const { exec } = require('child_process')
+  exec('pm2 reload default',{windowsHide:true}, (error, stdout, stderr) => {
+    if (error) {
+        console.error(`Error restarting application: ${error}`);
+        return;
+    }
+})
+});
+
+api.get("/system/ping", async (req, res, next) => {
+  res.status(200).json({
+    "status": "online"
+  })
+});
+
 api.get("/database/audits", async (req, res, next) => {
   const collection = require(`../auditmodel`)
   let page = req.query.page
@@ -121,38 +138,41 @@ api.post('/database/delete', async (req, res, next) => {
   const post_data = req.body
   const collection = require(`../models/${post_data.collection}`)
   const data = await collection.find({}).exec()
-  try {
   collection.findOneAndDelete({ _id : data[Number(`${post_data.object_no}`)]._id }).exec()
-  res.status(200).json({ "messsage": "success"})
-  } catch(err){
+  .then((Document) => {
+    res.status(200).json({ "messsage": "success"})
+  })
+  .catch((error) => {
     res.status(401).json({ "message": "error"})
-    console.log('error: ' + err)
-  }
+    console.error('Error creating document:', error);
+  });
 })
 
 api.post('/database/edit', async (req, res, next) => {
   const post_data = req.body
   const collection = require(`../models/${post_data.collection}`)
   const data = await collection.find({}).exec()
-  try {
   collection.findOneAndUpdate({ _id : data[Number(`${post_data.object_no}`)]._id }, { $set: post_data.json}).exec()
-  res.status(200).json({ "messsage": "success"})
-  } catch(err){
+  .then((Document) => {
+    res.status(200).json({ "messsage": "success"})
+  })
+  .catch((error) => {
     res.status(401).json({ "message": "error"})
-    console.log('error: ' + err)
-  }
+    console.error('Error creating document:', error);
+  });
 })
 
 api.post('/database/create', async (req, res, next) => {
   const post_data = req.body
   const collection = require(`../models/${post_data.collection}`)
-  try {
   collection.create(post_data.json)
-  res.status(200).json({ "messsage": "success"})
-  } catch(err){
+  .then((Document) => {
+    res.status(200).json({ "messsage": "success"})
+  })
+  .catch((error) => {
     res.status(401).json({ "message": "error"})
-    console.log('error: ' + err)
-  }
+    console.error('Error creating document:', error);
+  });
 })
 
 // api.post('/login', async (req, res, next) => {

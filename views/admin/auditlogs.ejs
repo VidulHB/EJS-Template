@@ -60,6 +60,11 @@
               <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
             </li>
           </ul>
+          <div class="b-divider b-vr" style="width: 5px; height: 40px; margin-right: 15px;"></div>
+          <div>
+            <button type="button" style="height: 40px; width: 40px;" id="refreshbtn" onclick="load_cards(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#refresh"/></svg></button>
+          </div>
+
 </div>
 
   <div class="b-divider" style="height: 5px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;"></div>
@@ -85,69 +90,6 @@
     <div class="tab-content" id="pills-tabContent" style="width: 1100px; margin:auto;">
     <div class="tab-pane fade show active d-flex gap-3 flex-wrap" id="pills-database" role="tabpanel" aria-labelledby="pills-database-tab" tabindex="0">
 
-        
-      <!-- <div class="card mb-3" data-bs-type="success" style="width: 350px; height: min-content;">
-        <div class="card-header text-bg-success" style="border-radius: 0.312rem; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#c1" aria-expanded="false" aria-controls="c1">
-          Created Object
-           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
-            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down" id="icon"/></svg></span> 
-            <br> <span style="font-size: 13px;">21th Saturday 2024</span>
-          </div>
-        <div class="card-body collapse" id="c1">
-          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : 2424c323d4322d33s23xd32c</p>
-          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : users</p>
-          <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
-            <span class="exp-arr"  data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="false" aria-controls="a1" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16" id="action"><use id="icon" xlink:href="#caret-right"></use></svg>
-            </span>
-            <span>CreatedFields : Object (2)</span>
-            <p class="inner-arr-txt collapse object" id="a1">username : Vidul</p>
-            <p class="inner-arr-txt collapse object" id="a1">age : 16</p>
-            </div>
-        </div>
-      </div>
-
-      <div class="card mb-3" data-bs-type="warning" style="width: 350px; height: min-content;">
-        <div class="card-header text-bg-warning" style="border-radius: 0.312rem; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#c2" aria-expanded="false" aria-controls="c2">
-          Updated Object
-           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
-            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down" id="icon"/></svg></span> 
-            <br> <span style="font-size: 13px;">20th Saturday 2024</span>
-          </div>
-        <div class="card-body collapse" id="c2">
-          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : 2424c323d2d33s23xd3c232c</p>
-          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : users</p>
-          <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
-            <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16" id="action"><use id="icon" xlink:href="#caret-right"></use></svg>
-            </span>
-            <span>UpdatedFields : Object (2)</span>
-            <p class="inner-arr-txt collapse object" id="a2">username : Senura</p>
-            <p class="inner-arr-txt collapse object" id="a2">age : 16</p>
-            </div>
-        </div>
-      </div>
-
-      <div class="card mb-3" data-bs-type="danger" style="width: 350px; height: min-content;">
-        <div class="card-header text-bg-danger" style="border-radius: 0.312rem; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#c3" aria-expanded="false" aria-controls="c3">
-          Deleted Object
-           <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
-            <svg class="bi pe-none me-2" width="25" height="25" id="action"><use xlink:href="#caret-down" id="icon"/></svg></span> 
-            <br> <span style="font-size: 13px;">19th Saturday 2024</span>
-          </div>
-        <div class="card-body collapse" id="c3">
-          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Key/_id : 2424c32342424s23xd3c332c</p>
-          <p class="card-text" style="margin-bottom: 0px; margin-left: 20px;">Collection : users</p>
-          <div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
-            <span class="exp-arr" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use id="icon" xlink:href="#caret-right"></use></svg>
-            </span>
-            <span>Fields : Object (2)</span>
-            <p class="inner-arr-txt collapse object" id="a3">username : Gaviru</p>
-            <p class="inner-arr-txt collapse object" id="a3">age : 15</p>
-            </div>
-        </div>
-      </div> -->
   </div>
   </div>
 </div>
@@ -175,6 +117,9 @@
         }
   }
   function load_cards() {
+    $('#refreshbtn').prop("disabled", true)
+        $('#refreshbtn').find('#icon').hide()
+        $('#refreshbtn').find('#spinner').show()
         loading_cards()
         let page = 1
         if(!$('.pagination').hasClass('placeholder-glow')){
@@ -248,6 +193,9 @@
           `)
           
         }
+        $('#refreshbtn').prop("disabled", false)
+        $('#refreshbtn').find('#icon').show()
+        $('#refreshbtn').find('#spinner').hide()
         })
         .catch(function(error) {
             console.error('Error:', error);

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Vidul">
+    <title>Dev | Admin Panel</title>
+
+    <%- include('../partials/links') %>   
+
+<style>
+       html, body {
+        height: 100%;
+        font-family: cursive;
+        overflow: hidden;
+      }
+      .card-tools{
+        display: none;
+      }
+      .card-tool{
+        display: none;
+        width: 30px;
+        height: 30px;
+        margin: 10px;
+      }
+      .card:hover .card-tools .card-tool{
+        display: block;
+      }
+      
+/* ::-webkit-scrollbar {
+  width: 5px;
+} */
+</style>
+
+  </head>
+  <body>
+
+    <!-- Icons -->
+    <%- include('../partials/icons') %>
+
+<main class="d-flex">
+
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar', {page: "dev"}) %>
+
+  <!-- Body -->
+  <div class="container" style="max-height: 100%;">
+    <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px;">
+      <div>
+            <button type="button" style="height: 40px; width: max-content;" id="restartbtn" onclick="restart(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#refresh"/></svg>Restart</button>
+          </div>
+    </div>
+
+  <div class="b-divider" style="height: 5px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;"></div>
+
+  <div style="height: 86.5%; width: 70%; overflow: hidden; overflow-x: hidden; position: fixed;">
+  <div class="d-flex gap-3 flex-wrap">
+    
+      </div>
+  </div>
+
+  <!-- Toasts, Modals, ect -->
+
+<%- include('../partials/toasts') %>
+
+</div>
+</main>
+<script>
+function restart(element) {
+  const id = Math.round(Math.random()*99999999)
+  $(element).addClass('disabled')
+  toast(`Restarting... <div class="spinner-border spinner-border-sm float-end" role="status"></div> `, 'warning', 'no', id)
+ axios.get(`/api/system/restart`)
+  .then(function(response) {
+    console.log(response)
+    setTimeout(() => {
+      const interval = setInterval(() => {
+      axios.get(`/api/system/ping`)
+  .then(function(response) {
+    $(`.id-${id}`)
+    .removeClass('text-bg-warning')
+    .addClass('text-bg-success')
+    .children().empty().append('Server Restarted Successfully')
+
+    clearInterval(interval)
+    $(element).removeClass('disabled')
+  })
+  .catch(function(error) {
+        });
+    }, 100);
+    }, 10000);
+  })
+  .catch(function(error) {
+            console.error('Error:', error);
+        });
+
+}
+</script>
+</html>

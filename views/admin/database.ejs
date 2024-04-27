@@ -137,7 +137,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success addobjModal-confirm" onclick="addObj(this)" data-bs-dismiss="modal" id="addobjModal-confirm">Insert Object</button>
+        <button type="button" class="btn btn-success addobjModal-confirm" onclick="addObj(this)" id="addobjModal-confirm">Insert Object</button>
       </div>
     </div>
   </div>
@@ -157,7 +157,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success cloneobjModal-confirm" onclick="cloneObj(this)" data-bs-dismiss="modal" id="cloneobjModal-confirm">Clone Object</button>
+        <button type="button" class="btn btn-success cloneobjModal-confirm" onclick="cloneObj(this)" id="cloneobjModal-confirm">Clone Object</button>
       </div>
     </div>
   </div>
@@ -343,11 +343,12 @@
             let keys = Object.keys(collection)
 
             function inputtype(type) {
+              console.log(type)
               if(type === "Boolean"){
-                return false
+                return 'false'
               }
               if(type === "Number"){
-                return 0
+                return '0'
               }
               return ""
             }
@@ -420,7 +421,7 @@
               }else{
               card_text += `<span class="input-group input-group-sm mb-3">
   <span class="input-group-text" id="inputGroup-sizing-sm">${key}</span>
-  <input type="${collection[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(typeof collection[key])}" aria-describedby="inputGroup-sizing-sm">
+  <input type="${collection[key]}" name="${key}" id="${key}" class="form-control" aria-label="Sizing example input" value="${inputtype(collection[key])}" aria-describedby="inputGroup-sizing-sm">
 </span>`
               }
             }
