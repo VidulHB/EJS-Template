@@ -43,8 +43,8 @@ admin.get('/audits', async (req, res, next) => {
     user: req.session.user
   });
 });
-admin.get('/dev', async (req, res, next) => {
-  res.render('admin/dev.ejs', {
+admin.get('/server', async (req, res, next) => {
+  res.render('admin/server.ejs', {
     user: req.session.user
   });
 });

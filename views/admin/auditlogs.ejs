@@ -46,7 +46,7 @@
 <main class="d-flex">
 
   <!-- Sidebar -->
-  <%- include('../partials/sidebar', {page: "audit"}) %>
+  <%- include('../partials/admin-sidebar', {page: "audit"}) %>
 
   <!-- Body -->
   <div class="container" style="max-height: 100%;">
@@ -62,7 +62,7 @@
           </ul>
           <div class="b-divider b-vr" style="width: 5px; height: 40px; margin-right: 15px;"></div>
           <div>
-            <button type="button" style="height: 40px; width: 40px;" id="refreshbtn" onclick="load_cards(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#refresh"/></svg></button>
+            <button type="button" style="height: 40px; width: 40px;" id="refreshbtn" onclick="load_cards(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#rotate-right-solid"/></svg></button>
           </div>
 
 </div>
@@ -87,7 +87,7 @@
         </ul>
       </nav>
       </div>
-    <div class="tab-content" id="pills-tabContent" style="width: 1100px; margin:auto;">
+    <div class="tab-content" id="pills-tabContent" style="max-width: 100%; margin:auto;">
     <div class="tab-pane fade show active d-flex gap-3 flex-wrap" id="pills-database" role="tabpanel" aria-labelledby="pills-database-tab" tabindex="0">
 
   </div>
@@ -182,7 +182,7 @@
         <div class="card-header text-bg-${type(element.operation)}" style="border-radius: 0.312rem; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#c${i}" aria-expanded="false" aria-controls="c${i}">
           ${type2(element.operation)}
            <span class="position-absolute top-0 end-0" style="margin-right: 10px; margin-top: 18px;">
-            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down" id="icon"/></svg></span> 
+            <svg class="bi pe-none me-2" width="25" height="25"><use xlink:href="#caret-down-solid" id="icon"/></svg></span> 
             <br> <span style="font-size: 13px;">${new Date(element.walltime)}</span>
           </div>
         <div class="card-body collapse" id="c${i}">
@@ -283,9 +283,9 @@ document.addEventListener('hide.bs.collapse', event => {
     "border-bottom-right-radius": "0.312rem",
   })
   if(event.target.classList.contains('object')){
-    $(event.target).parent().find('#icon').attr('xlink:href', '#caret-right')
+    $(event.target).parent().find('#icon').attr('xlink:href', '#caret-right-solid')
   }else{
-  $(event.target).parent().find('#action#icon').attr('xlink:href', '#caret-down')
+  $(event.target).parent().find('#action#icon').attr('xlink:href', '#caret-down-solid')
   }
 }
 })
@@ -300,9 +300,9 @@ document.addEventListener('show.bs.collapse', event => {
   })
 
   if(event.target.classList.contains('object')){
-    $(event.target).parent().find('#icon').attr('xlink:href', '#caret-down')
+    $(event.target).parent().find('#icon').attr('xlink:href', '#caret-down-solid')
   }else{
-  $(event.target).parent().find('#action#icon').attr('xlink:href', '#caret-up')
+  $(event.target).parent().find('#action#icon').attr('xlink:href', '#caret-up-solid')
   }
 }
 })

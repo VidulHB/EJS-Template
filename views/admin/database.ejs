@@ -46,34 +46,34 @@
 <main class="d-flex">
 
   <!-- Sidebar -->
-  <%- include('../partials/sidebar', {page: "database"}) %>
+  <%- include('../partials/admin-sidebar', {page: "database"}) %>
 
   <!-- Body -->
-  <div class="container" style="max-height: 100%;">
+  <div class="container" style="max-height: 100%; max-width: 100%;">
     <div class="d-flex gap-2" style="padding-top: 20px; padding-left: 20px; padding-right: 20px;">
         <div style="height: 35px;">
             <button type="button" id="col-selector" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              Collection: Loading...
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#layer-group-solid"/></svg>Collection: Loading...
             </button>
             <ul class="dropdown-menu" id="collections-sel">
             </ul>
           </div>
           <div class="input-group">
-            <div class="input-group-text"><svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#search"/></svg></div>
+            <div class="input-group-text"><svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#magnifying-glass-solid"/></svg></div>
             <input type="text" class="form-control" id="search-bar" placeholder="Search">
           </div>
           <div>
-            <button type="button" style="height: 40px; width: 40px;" id="refreshbtn" onclick="load_cards(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#refresh"/></svg></button>
+            <button type="button" style="height: 40px; width: 40px;" id="refreshbtn" onclick="load_cards(this)" class="btn btn-primary" aria-expanded="false"><span id="spinner" class="spinner-border" style="margin-left: -2.5px; height: 20px; width: 20px; display: none;" aria-hidden="true"></span><svg id="icon" class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#rotate-right-solid"/></svg></button>
           </div>
           <div>
-            <button type="button" id="insertbtn" data-bs-toggle="modal" data-bs-target="#addobjModal" data-bs-json="" style="height: 40px; width: 40px;" class="btn btn-primary" aria-expanded="false"><svg class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#add"/></svg></button>
+            <button type="button" id="insertbtn" data-bs-toggle="modal" data-bs-target="#addobjModal" data-bs-json="" style="height: 40px; width: 40px;" class="btn btn-primary" aria-expanded="false"><svg class="bi pe-none me-2 position-absolute translate-middle" width="20" height="20" style="padding-right: -10px;"><use xlink:href="#file-circle-plus-solid"/></svg></button>
           </div>
 </div>
 
   <div class="b-divider" style="height: 5px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px;"></div>
 
   <div style="height: 86.5%; overflow: scroll; overflow-x: hidden; position: fixed;">
-  <div class="d-flex row-gap-3 column-gap-3 flex-wrap align-items-stretch" style=" width: 1200px; padding: 0px;" id="inside-collection">
+  <div class="d-flex row-gap-3 column-gap-3 flex-wrap align-items-stretch" style="max-width: 100%; padding: 0px;" id="inside-collection">
 
     </div>
   </div>
@@ -203,10 +203,10 @@
 
   function exp_arr(element) {
      let href = $(element).find('.arr-pointer').attr("xlink:href")
-     if(href === "#caret-right"){
-      $(element).find('.arr-pointer').attr("xlink:href", "#caret-down")
+     if(href === "#caret-right-solid"){
+      $(element).find('.arr-pointer').attr("xlink:href", "#caret-down-solid")
      }else{
-      $(element).find('.arr-pointer').attr("xlink:href", "#caret-right")
+      $(element).find('.arr-pointer').attr("xlink:href", "#caret-right-solid")
      }
     }
     function copyJSON(element) {
@@ -365,7 +365,7 @@
                 })
                 objects += `<div class="collapse inner-arr-txt" id="${CardID}">
               <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
               </span>
               <span>${i2} : Object</span>
               ${object_children}
@@ -383,7 +383,7 @@
                 if (typeof nest[key] === 'object') {
                   objects += `<div class="collapse inner-arr-txt" id="${CardID}">
               <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
               </span>
             <span>${key} : Nest (${Object.keys(nest[key]).length})</span>
             ${handleNested(nest[key], `${CardID}_${i2}`)}
@@ -404,7 +404,7 @@
               if(Array.isArray(collection[key])){
                 card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
             </span>
             <span>${key} : Array (${collection[key].length})</span>
             ${handleArr(collection[key], `${i}_${key}`)}
@@ -413,7 +413,7 @@
                 if (typeof collection[key] === 'object') {
                   card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
             </span>
             <span>${key} : Nest (${Object.keys(collection[key]).length})</span>
             ${handleNested(collection[key], `${i}_${key}`)}
@@ -518,7 +518,7 @@
                 })
                 objects += `<div class="collapse inner-arr-txt" id="${CardID}">
               <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
               </span>
               <span>${i2} : Object</span>
               ${object_children}
@@ -536,7 +536,7 @@
                 if (typeof nest[key] === 'object') {
                   objects += `<div class="collapse inner-arr-txt" id="${CardID}">
               <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
               </span>
             <span>${key} : Nest (${Object.keys(nest[key]).length})</span>
             ${handleNested(nest[key], `${CardID}_${i2}`)}
@@ -557,7 +557,7 @@
               if(Array.isArray(collection[key])){
                 card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
             </span>
             <span>${key} : Array (${collection[key].length})</span>
             ${handleArr(collection[key], `${i}_${key}`)}
@@ -566,7 +566,7 @@
                 if (typeof collection[key] === 'object') {
                   card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
             </span>
             <span>${key} : Nest (${Object.keys(collection[key]).length})</span>
             ${handleNested(collection[key], `${i}_${key}`)}
@@ -614,7 +614,7 @@
   function load_cards() {
     let element = '#refreshbtn'
     let selectedCollection = $('input[type="radio"][name="collection"]:checked').attr('id');
-        $('#col-selector').text(`Collection: ${selectedCollection}`)
+        $('#col-selector').html(`${icon('layer-group-solid')}Collection: ${selectedCollection}`)
         $('#col-selector').data("bs-collection", `${selectedCollection}`)
         $('#insertbtn').prop("disabled", true)
         $('#col-selector').prop("disabled", true)
@@ -643,7 +643,7 @@
                 })
                 objects += `<div class="collapse inner-arr-txt" id="${CardID}">
               <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
               </span>
               <span>${i2} : Object</span>
               ${object_children}
@@ -661,7 +661,7 @@
                 if (typeof nest[key] === 'object') {
                   objects += `<div class="collapse inner-arr-txt" id="${CardID}">
               <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${CardID}_${i2}" aria-expanded="false" aria-controls="${CardID}_${i2}" style="margin-left: -20px; margin-right: -10px;">
-                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+                <svg class="bi pe-none me-2 " width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
               </span>
             <span>${key} : Nest (${Object.keys(nest[key]).length})</span>
             ${handleNested(nest[key], `${CardID}_${i2}`)}
@@ -677,7 +677,7 @@
               if(Array.isArray(collection[key])){
                 card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
             </span>
             <span>${key} : Array (${collection[key].length})</span>
             ${handleArr(collection[key], `${i}_${key}`)}
@@ -686,7 +686,7 @@
                 if (typeof collection[key] === 'object') {
                   card_text += `<div class="card-text" style="margin-bottom: 0px; margin-left: 20px;">
             <span class="exp-arr" onclick="exp_arr(this)" data-bs-toggle="collapse" data-bs-target="#${i}_${key}" aria-expanded="false" aria-controls="${i}_${key}" style="margin-left: -20px; margin-right: -10px;">
-              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right"/></svg>
+              <svg class="bi pe-none me-2" width="16" height="16"><use class="arr-pointer" xlink:href="#caret-right-solid"/></svg>
             </span>
             <span>${key} : Nest (${Object.keys(collection[key]).length})</span>
             ${handleNested(collection[key], `${i}_${key}`)}
@@ -699,10 +699,10 @@
             $('#inside-collection').append(`<div class="search-card" id="${i}">
             <div class="card" style="width: 350px; height: max-content; background-color: #1a1d20; border: none; box-shadow: 7.5px 7.5px 2.5px #2c3236;">
         <div class="card-tools z-2 d-flex position-relative flex-wrap">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#editobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#edit"/></svg></button>
-            <button onclick="copyJSON(this)" id="copyToastBtn" type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy"/></svg><span id="json" style="display: none;">${JSON.stringify(collection)}</span></button>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#cloneobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone"/></svg></button>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-objno="${i}" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#delete"/></svg></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#editobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 130px;" aria-disabled="false" title="Edit" aria-label="Edit"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#pen-to-square-solid"/></svg></button>
+            <button onclick="copyJSON(this)" id="copyToastBtn" type="button" class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 90px;" aria-disabled="false" title="Copy" aria-label="Copy"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#copy-solid"/></svg><span id="json" style="display: none;">${JSON.stringify(collection)}</span></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#cloneobjModal" data-bs-objno="${i}" data-bs-json='${JSON.stringify(collection)}' class="btn btn-dark card-tool position-absolute top-0 end-0" style="margin-right: 50px;" aria-disabled="false" title="Clone" aria-label="Clone"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#clone-solid"/></svg></button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-objno="${i}" class="btn btn-danger card-tool position-absolute top-0 end-0" aria-disabled="false" title="Delete" aria-label="Delete"><svg class="bi pe-none me-2 position-absolute top-50 start-50 translate-middle" width="16" height="16" style="padding-right: -10px;"><use xlink:href="#trash-solid"/></svg></button>
         </div>
         <div class="card-body">
           ${card_text}
@@ -739,7 +739,7 @@
           for (let i = 0; i < response.data.length; i++) {
             const element = response.data[i];
             if(i === response.data.length-1){
-              $('#col-selector').text(`Collection: ${element.name}`)
+              $('#col-selector').html(`${icon('layer-group-solid')}Collection: ${element.name}`)
            $('#collections-sel').prepend(`<li><input onclick="checkLoad(this)" type="radio" class="btn-check" name="collection" id='${element.name}' autocomplete="off" checked>
                     <label class="btn btn-outline-primary dropdown-item" for="${element.name}">${element.name}</label></li>`)
                     $(`#${element.name}`).data('bs-schema', `${element.json}`)

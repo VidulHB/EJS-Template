@@ -7,20 +7,29 @@ const bodyParser = require('body-parser')
 const session = require("express-session");
 const chalk = require('chalk');
 const { v4: uuidv4 } = require("uuid");
-app.use(express.static(__dirname + '/public'));
 
 //MongoDB
-//mongodb+srv://admin:v1i1d1u4l@ejs-template.eh6bicf.mongodb.net/?retryWrites=true&w=majority&appName=EJS-Template
 const MongoDBURI = 'mongodb+srv://admin:v1i1d1u4l@ejs-template.eh6bicf.mongodb.net/?retryWrites=true&w=majority&appName=EJS-Template'
 const MongoStore = require("connect-mongo")(session);
-mongoose.connect(MongoDBURI, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
+mongoose.connect(MongoDBURI);
 const Database = mongoose.connection;
-Database.watch().on('change', (data) => {
-  if(!data.ns.coll.includes('audits')){
-    const audits = require('./auditmodel.js')
+Database.watch().on('change', async (data) => {
+  if(!data.ns.coll.includes('audits') && !data.ns.coll.includes('traffic')){
+    const traffic = require('./PrivateModels/traffic');
+    let date = new Date()
+  let formateddate = new Date(date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2))
+  let data = await traffic.findOne({Day: formateddate}).exec()
+  if(data){
+   await traffic.findOneAndUpdate({Day: formateddate}, {$set: { Database_Changes: (data.Database_Changes+1)}}).exec()
+  }else{
+   await traffic.create({
+      Day: formateddate,
+  Visits: 0,
+  API_Requests: 0,
+  Database_Changes: 1,
+    })
+  }
+    const audits = require('./PrivateModels/auditmodel.js')
     if(!data.updateDescription){
       audits.create({
         operation: data.operationType,
@@ -47,6 +56,7 @@ Database.on("error", console.error.bind(console, chalk.bgRedBright.bold(' [Mongo
 Database.once("open", () => { console.log(chalk.bgGreenBright.bold(' [MongoDB] Successfuly Connected To Database '))});
 
 //Express
+app.use(express.static(__dirname + '/public'));
 app.use(
   session({
     secret: "LHDIDH$#%@$^#$^oq$#@%FSDFDSF@$ihvVSFIVHISHI41$#@^#%&#$$@#$JBVVLJSV",
@@ -56,24 +66,21 @@ app.use(
       mongooseConnection: Database,
     }),
     cookie: {
-      maxAge: 1 * 24 * 60 * 60 * 1000 * 1000 * 1000
+      maxAge: 8.64e+7 * 7 // 7 days
     }
   })
 );
 app.listen(`${PORT}`, () => {
-  console.clear();
   console.log(chalk.bgGreenBright.bold(' [Express] WebApp Successfully Booted '));
 })
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '10gb' }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '10gb' }));
 app.set('view engine', 'ejs');
 app.use(session({
   secret: uuidv4(), 
-  resave: false,
+  resave: true,
   saveUninitialized: true
 }));
-app.use(express.json({limit: '200000mb'}));
-app.use(express.urlencoded({limit: '200000mb'}));
 
 //Routes
 const index = require('./routes/index.js')
@@ -84,15 +91,8 @@ app.use('/', index)
 app.use('/admin', admin)
 app.use('/Api', API)
 app.use('/Upload', upload)
-app.use((req, res, next) => {
-    res.render('404.ejs')
-})
 
-const { QuickDB } = require("quick.db");
-const db = new QuickDB()
-db.set("uptime", 1);
-async function uptime() {
-  await db.add("uptime", 1);
-  setTimeout(uptime, 1000);
-}
-setTimeout(uptime, 1000);
+//404 page
+app.use((req, res, next) => {
+  res.render('404.ejs')
+})

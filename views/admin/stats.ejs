@@ -43,7 +43,7 @@
 <main class="d-flex">
 
   <!-- Sidebar -->
-  <%- include('../partials/sidebar', {page: "stats"}) %>
+  <%- include('../partials/admin-sidebar', {page: "stats"}) %>
 
   <!-- Body -->
   <div class="container" style="max-height: 100%;">
@@ -54,7 +54,7 @@
               <button class="nav-link active" id="pills-traffic-tab" data-bs-toggle="pill" data-bs-target="#pills-traffic" type="button" role="tab" aria-controls="pills-traffic" aria-selected="true">Traffic</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="pills-timespent-tab" data-bs-toggle="pill" data-bs-target="#pills-timespent" type="button" role="tab" aria-controls="pills-timespent" aria-selected="false">Time Spent</button>
+              <button class="nav-link" id="pills-apireq-tab" data-bs-toggle="pill" data-bs-target="#pills-apireq" type="button" role="tab" aria-controls="pills-apireq" aria-selected="false">API Requests</button>
             </li>
             <li class="nav-item" role="presentation">
               <button class="nav-link" id="pills-DBactivity-tab" data-bs-toggle="pill" data-bs-target="#pills-DBactivity" type="button" role="tab" aria-controls="pills-DBactivity" aria-selected="false">Database Activity</button>
@@ -74,8 +74,8 @@
         <div class="tab-pane fade show active" id="pills-traffic" role="tabpanel" aria-labelledby="pills-traffic-tab" tabindex="0">
             <canvas id="traffic" style="display: block; box-sizing: border-box; height: 600px; width: 900px;"></canvas>
         </div>
-        <div class="tab-pane fade" id="pills-timespent" role="tabpanel" aria-labelledby="pills-timespent-tab" tabindex="0">
-          <canvas id="timespent" style="display: block; box-sizing: border-box; height: 600px; width: 900px;"></canvas>
+        <div class="tab-pane fade" id="pills-apireq" role="tabpanel" aria-labelledby="pills-apireq-tab" tabindex="0">
+          <canvas id="apireq" style="display: block; box-sizing: border-box; height: 600px; width: 900px;"></canvas>
         </div>
         <div class="tab-pane fade" id="pills-DBactivity" role="tabpanel" aria-labelledby="pills-DBactivity-tab" tabindex="0">
           <canvas id="dbactivity" style="display: block; box-sizing: border-box; height: 600px; width: 900px;"></canvas>
@@ -89,30 +89,43 @@
 </main>
 <script>
   const tab1 = document.getElementById('traffic');
-  const tab2 = document.getElementById('timespent');
+  const tab2 = document.getElementById('apireq');
   const tab3 = document.getElementById('dbactivity');
   Chart.defaults.backgroundColor = 'rgba(13, 110, 253, 1)';
 Chart.defaults.borderColor = 'rgba(164, 167, 169, 0.75)';
 Chart.defaults.color = '#ffffff';
 
 
-let dates = []
-let traffic = []
-let time = []
-let dbactions = []
+let traffic;
+let apireqs; 
+let dbactions; 
+let data_length = 0
+
+axios.get(`/api/system/traffic`)
+        .then(function(res) {
+          data_length = res.data.traffic.length
+          traffic = res.data.traffic
+          apireqs = res.data.apireqs
+          dbactions = res.data.dbactions
+          entire()
+  })
+        .catch(function(error) {
+            console.error('Error:', error);
+        });
+
+function entire() {
+  let dates = []
 const today = new Date()
 
-for (let i=0;i<30;i++) {
+for (let i=0;i<data_length;i++) {
   let str = new Date(new Date().setDate(today.getDate() - i))
   let words = str.toString().split(' ');
 var firstFourWords = words.slice(0, 4);
 var date = firstFourWords.join(' ');
 
     dates.push(date)
-    traffic.push(Math.round(Math.random()*100))
-    dbactions.push(Math.round(Math.random()*1000))
-    time.push(Math.round(Math.random()*100))
 }
+date = dates.reverse()
 
   new Chart(tab1, {
     type: 'line',
@@ -126,26 +139,29 @@ var date = firstFourWords.join(' ');
     }
   });
 
-  function timespent() {
+  function apireq() {
     try {
     new Chart(tab2, {
     type: 'line',
     data: {
         labels: dates,
   datasets: [{
-    label: 'Time Spent In Website (Hours)',
-    data: time,
+    label: 'API Requests',
+    data: apireqs,
     fill: false,
   }]
     }
   })
 } catch (error){
-
+console.log(error)
 }
   }
 
-  $("#pills-timespent-tab").click(function(){
-    setTimeout(timespent, 200);
+  $("#pills-apireq-tab").click(function(){
+    if($("#pills-apireq-tab").data('bs-loaded') !== 'true'){
+      setTimeout(apireq, 200);
+      $("#pills-apireq-tab").data('bs-loaded', 'true')
+    }
   })
 
   function dbactivity() {
@@ -155,19 +171,23 @@ var date = firstFourWords.join(' ');
     data: {
         labels: dates,
   datasets: [{
-    label: 'DB Activity',
+    label: 'Database Activity',
     data: dbactions,
     fill: false,
   }]
     }
   })
 } catch (error){
-
+  console.log(error)
 }
   }
 
   $("#pills-DBactivity-tab").click(function(){
-    setTimeout(dbactivity, 200);
-})
+    if($("#pills-DBactivity-tab").data('bs-loaded') !== 'true'){
+      setTimeout(dbactivity, 200);
+      $("#pills-DBactivity-tab").data('bs-loaded', 'true')
+    }
+}) 
+}
 </script>
 </html>
