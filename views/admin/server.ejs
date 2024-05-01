@@ -235,7 +235,7 @@ let CpuAndRamChart = new Chart(cpuandram, {
   }
 
 
-  const eventSource = new EventSource('http://127.0.0.1:3000/api/system/usage');
+  const eventSource = new EventSource('/api/system/usage');
 
 eventSource.onmessage = (event) => {
   const data = JSON.parse(event.data);
