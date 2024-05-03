@@ -14,13 +14,13 @@ const MongoStore = require("connect-mongo")(session);
 mongoose.connect(MongoDBURI);
 const Database = mongoose.connection;
 Database.watch().on('change', async (data) => {
-  if(!data.ns.coll.includes('audits') && !data.ns.coll.includes('traffic')){
+  if(data.ns.coll !== 'audits' && data.ns.coll !== 'traffics'){
     const traffic = require('./PrivateModels/traffic');
     let date = new Date()
   let formateddate = new Date(date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2))
-  let data = await traffic.findOne({Day: formateddate}).exec()
-  if(data){
-   await traffic.findOneAndUpdate({Day: formateddate}, {$set: { Database_Changes: (data.Database_Changes+1)}}).exec()
+  let data2 = await traffic.findOne({Day: formateddate}).exec()
+  if(data2){
+   await traffic.findOneAndUpdate({Day: formateddate}, {$set: { Database_Changes: (data2.Database_Changes+1)}}).exec()
   }else{
    await traffic.create({
       Day: formateddate,
