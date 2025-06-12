@@ -9,7 +9,7 @@ const chalk = require('chalk');
 const { v4: uuidv4 } = require("uuid");
 
 //MongoDB
-const MongoDBURI = 'mongodb+srv://admin:v1i1d1u4l@ejs-template.eh6bicf.mongodb.net/?retryWrites=true&w=majority&appName=EJS-Template'
+const MongoDBURI = ''
 const MongoStore = require("connect-mongo")(session);
 mongoose.connect(MongoDBURI);
 const Database = mongoose.connection;
